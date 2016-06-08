@@ -1,0 +1,1 @@
+C:\Src\Repos\Drones\DroneQueryService\obj\x64\Debug\DroneQueryService.csprojResolveAssemblyReference.cache

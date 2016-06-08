@@ -1,0 +1,1 @@
+C:\Src\Repos\Drones\Drones\obj\x64\Debug\Drones.sfprojResolveAssemblyReference.cache
