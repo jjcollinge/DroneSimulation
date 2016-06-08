@@ -46,32 +46,35 @@ namespace DroneActor
             });
         }
 
-        public Task SetHeading(int heading)
+        public async Task SetHeading(int heading)
         {
             await UpdateState(state =>
             {
-                state.Altitude = alt;
+                state.Heading = heading;
                 return state;
             });
         }
-        public Task<Tuple<double, double>> GetCoordinates()
+        public async Task<Tuple<double, double>> GetCoordinates()
         {
-            throw new NotImplementedException();
+            var state = await GetState();
+            return new Tuple<double, double>(state.Longitude, state.Latitude);
         }
 
-        public Task<int> GetAltitude()
+        public async Task<int> GetAltitude()
         {
-            throw new NotImplementedException();
+            var state = await GetState();
+            return state.Altitude;
         }
 
-        public Task<int> GetHeading()
+        public async Task<int> GetHeading()
         {
-            throw new NotImplementedException();
+            var state = await GetState();
+            return state.Heading;
         }
 
-        public Task<DroneActorState> GetState()
+        public async Task<DroneActorState> GetState()
         {
-            throw new NotImplementedException();
+            return await this.StateManager.GetStateAsync<DroneActorState>(STATE_IDENTIFIER);
         }
         #endregion
 
