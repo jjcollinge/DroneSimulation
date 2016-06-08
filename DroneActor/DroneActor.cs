@@ -18,13 +18,9 @@ namespace DroneActor
         private const string STATE_IDENTIFIER = "DRONESTATE";
         #endregion
 
-        private IDroneQueryService _query;
+        #region private data members
         private delegate DroneActorState Update(DroneActorState state);
-
-        public DroneActor(IDroneQueryService query)
-        {
-            _query = query;
-        }
+        #endregion
 
         #region methods
         public async Task SetAltitude(int alt)

@@ -14,6 +14,5 @@ C:\Src\Repos\Drones\DroneActor.Interfaces\bin\x64\Debug\Microsoft.ServiceFabric.
 C:\Src\Repos\Drones\DroneActor.Interfaces\bin\x64\Debug\Microsoft.ServiceFabric.Services.xml
 C:\Src\Repos\Drones\DroneActor.Interfaces\bin\x64\Debug\System.Fabric.xml
 C:\Src\Repos\Drones\DroneActor.Interfaces\bin\x64\Debug\en-us\Microsoft.ServiceFabric.Internal.Strings.resources.dll
-C:\Src\Repos\Drones\DroneActor.Interfaces\obj\x64\Debug\DroneActor.Interfaces.csprojResolveAssemblyReference.cache
 C:\Src\Repos\Drones\DroneActor.Interfaces\obj\x64\Debug\DroneActor.Interfaces.dll
 C:\Src\Repos\Drones\DroneActor.Interfaces\obj\x64\Debug\DroneActor.Interfaces.pdb

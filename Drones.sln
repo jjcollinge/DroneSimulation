@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneQueryService", "DroneQ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneQueryService.Interfaces", "DroneQueryService.Interfaces\DroneQueryService.Interfaces.csproj", "{2C8ACF04-E315-4561-904A-9FF9770034CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneWebApi", "DroneWebApi\DroneWebApi.csproj", "{4D3B6E26-4367-4F2F-9789-27C473E824E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,12 @@ Global
 		{2C8ACF04-E315-4561-904A-9FF9770034CF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2C8ACF04-E315-4561-904A-9FF9770034CF}.Release|x64.ActiveCfg = Release|Any CPU
 		{2C8ACF04-E315-4561-904A-9FF9770034CF}.Release|x64.Build.0 = Release|Any CPU
+		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Debug|x64.ActiveCfg = Debug|x64
+		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Debug|x64.Build.0 = Debug|x64
+		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Release|Any CPU.ActiveCfg = Release|x64
+		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Release|x64.ActiveCfg = Release|x64
+		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

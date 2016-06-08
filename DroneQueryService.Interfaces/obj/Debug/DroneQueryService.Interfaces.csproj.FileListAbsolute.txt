@@ -1,4 +1,3 @@
-C:\Src\Repos\Drones\DroneQueryService.Interfaces\obj\Debug\DroneQueryService.Interfaces.csprojResolveAssemblyReference.cache
 C:\Src\Repos\Drones\DroneQueryService.Interfaces\bin\Debug\DroneQueryService.Interfaces.dll.config
 C:\Src\Repos\Drones\DroneQueryService.Interfaces\bin\Debug\DroneQueryService.Interfaces.dll
 C:\Src\Repos\Drones\DroneQueryService.Interfaces\bin\Debug\DroneQueryService.Interfaces.pdb
@@ -18,5 +17,6 @@ C:\Src\Repos\Drones\DroneQueryService.Interfaces\bin\Debug\Microsoft.ServiceFabr
 C:\Src\Repos\Drones\DroneQueryService.Interfaces\bin\Debug\System.Fabric.xml
 C:\Src\Repos\Drones\DroneQueryService.Interfaces\bin\Debug\Microsoft.ServiceFabric.Actors.xml
 C:\Src\Repos\Drones\DroneQueryService.Interfaces\bin\Debug\en-us\Microsoft.ServiceFabric.Internal.Strings.resources.dll
+C:\Src\Repos\Drones\DroneQueryService.Interfaces\obj\Debug\DroneQueryService.Interfaces.csprojResolveAssemblyReference.cache
 C:\Src\Repos\Drones\DroneQueryService.Interfaces\obj\Debug\DroneQueryService.Interfaces.dll
 C:\Src\Repos\Drones\DroneQueryService.Interfaces\obj\Debug\DroneQueryService.Interfaces.pdb
