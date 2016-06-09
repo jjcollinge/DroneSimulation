@@ -15,5 +15,6 @@ namespace Drones.Shared
         Task RemoveDroneAsync(string droneId);
         Task<bool> ContainsDroneIdAsync(string droneId);
         Task<long> GetDroneCountAsync();
+        Task LoadExistingRegistry(List<string> existingRegistry);
     }
 }

@@ -10,6 +10,7 @@ namespace DroneWebApi.Controllers
 {
     public class DroneController : ApiController
     {
+        private readonly string SERVICE_PREFIX = "DroneController";
         private IDroneManager _droneManager;
 
         public DroneController()
@@ -20,6 +21,7 @@ namespace DroneWebApi.Controllers
         // GET api/drone 
         public async Task<IEnumerable<DronePayload>> GetAsync()
         {
+            ServiceEventSource.Current.Message($"{SERVICE_PREFIX}: GetAsync called with no parameters");
             var drones = await _droneManager.GetDronesAsync();
             return drones;
         }
@@ -27,6 +29,7 @@ namespace DroneWebApi.Controllers
         // GET api/drone/5 
         public async Task<DronePayload> GetAsync(string id)
         {
+            ServiceEventSource.Current.Message($"{SERVICE_PREFIX}: GetAsync called with parameter {id}");
             var drone = await _droneManager.GetDroneAsync(id.ToString());
             return drone;
         }
@@ -34,19 +37,22 @@ namespace DroneWebApi.Controllers
         // POST api/drone 
         public async Task PostAsync([FromBody]DroneState droneState)
         {
+            ServiceEventSource.Current.Message($"{SERVICE_PREFIX}: PostAsync called with parameter {droneState}");
             var newDroneId = await _droneManager.GenerateDroneIdAsync();
             await _droneManager.AddDroneAsync(newDroneId, droneState);
         }
 
         // PUT api/drone/5 
-        public async Task Put(DronePayload updateDrone)
+        public async Task PutAsync(DronePayload updateDrone)
         {
+            ServiceEventSource.Current.Message($"{SERVICE_PREFIX}: PutAsync called with parameter {updateDrone}");
             await _droneManager.UpdateDroneAsync(updateDrone.Id, updateDrone.State);
         }
 
         // DELETE api/drone/5 
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
+            ServiceEventSource.Current.Message($"{SERVICE_PREFIX}: DeleteAsync called with parameter {id}");
             await _droneManager.RemoveDroneAsync(id.ToString());
         }
     }

@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="DronesType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
    <Parameters>
+      <Parameter Name="DroneSimulator_InstanceCount" DefaultValue="-1" />
       <Parameter Name="DroneManager_InstanceCount" DefaultValue="-1" />
       <Parameter Name="DroneRegistry_MinReplicaSetSize" DefaultValue="2" />
       <Parameter Name="DroneRegistry_PartitionCount" DefaultValue="1" />
@@ -10,6 +11,10 @@
       <Parameter Name="DroneActorService_MinReplicaSetSize" DefaultValue="2" />
       <Parameter Name="DroneActorService_TargetReplicaSetSize" DefaultValue="3" />
    </Parameters>
+   <ServiceManifestImport>
+      <ServiceManifestRef ServiceManifestName="DroneSimulatorPkg" ServiceManifestVersion="1.0.0" />
+      <ConfigOverrides />
+   </ServiceManifestImport>
    <ServiceManifestImport>
       <ServiceManifestRef ServiceManifestName="DroneManagerPkg" ServiceManifestVersion="1.0.0" />
       <ConfigOverrides />
@@ -26,6 +31,11 @@
       <ConfigOverrides />
    </ServiceManifestImport>
    <DefaultServices>
+      <Service Name="DroneSimulator">
+         <StatelessService ServiceTypeName="DroneSimulatorType" InstanceCount="[DroneSimulator_InstanceCount]">
+            <SingletonPartition />
+         </StatelessService>
+      </Service>
       <Service Name="DroneManager">
          <StatelessService ServiceTypeName="DroneManagerType" InstanceCount="[DroneManager_InstanceCount]">
             <SingletonPartition />

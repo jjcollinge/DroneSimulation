@@ -32,7 +32,7 @@ namespace DroneRegistry
 
         public async Task<List<string>> GetDronesAsync()
         {
-            if (!_initialised) await Initialise();
+            if (!_initialised) await Initialise(new List<string>());
 
             List<string> droneList = null;
 
@@ -49,7 +49,7 @@ namespace DroneRegistry
 
         public async Task AddDroneAsync(string droneId)
         {
-            if (!_initialised) await Initialise();
+            if (!_initialised) await Initialise(new List<string>());
 
             using (var tx = this.StateManager.CreateTransaction())
             {
@@ -61,7 +61,7 @@ namespace DroneRegistry
 
         public async Task RemoveDroneAsync(string droneId)
         {
-            if (!_initialised) await Initialise();
+            if (!_initialised) await Initialise(new List<string>());
 
             using (var tx = this.StateManager.CreateTransaction())
             {
@@ -73,7 +73,7 @@ namespace DroneRegistry
 
         public async Task<bool> ContainsDroneIdAsync(string droneId)
         {
-            if (!_initialised) await Initialise();
+            if (!_initialised) await Initialise(new List<string>());
 
             bool contains = false;
 
@@ -89,7 +89,7 @@ namespace DroneRegistry
 
         public async Task<long> GetDroneCountAsync()
         {
-            if (!_initialised) await Initialise();
+            if (!_initialised) await Initialise(new List<string>());
 
             var count = 0L;
             using(var tx = this.StateManager.CreateTransaction())
@@ -111,19 +111,24 @@ namespace DroneRegistry
             return droneList;
         }
 
-        private async Task Initialise()
+        private async Task Initialise(List<string> registry)
         {
             using (var tx = this.StateManager.CreateTransaction())
             {
                 var drones = _drones.Result;
                 if (drones.GetCountAsync(tx).Result < 1)
                 {
-                    await drones.AddAsync(tx, DICTIONARY_KEY, new List<string>());
+                    await drones.AddAsync(tx, DICTIONARY_KEY, registry);
                     await tx.CommitAsync();
                     _initialised = true;
                     ServiceEventSource.Current.Message($"Registry initialised with {drones.GetCountAsync(tx).Result.ToString()} items");
                 }
             }
+        }
+
+        public async Task LoadExistingRegistry(List<string> existingRegistry)
+        {
+            await Initialise(existingRegistry);
         }
 
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
@@ -132,5 +137,6 @@ namespace DroneRegistry
                 new ServiceReplicaListener(
                     (context) => this.CreateServiceRemotingListener(context)) };
         }
+
     }
 }

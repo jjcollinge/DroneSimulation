@@ -17,6 +17,7 @@
     <ProjectReference Include="..\DroneActor\DroneActor.csproj" />
     <ProjectReference Include="..\DroneManager\DroneManager.csproj" />
     <ProjectReference Include="..\DroneRegistry\DroneRegistry.csproj" />
+    <ProjectReference Include="..\DroneSimulator\DroneSimulator.csproj" />
     <ProjectReference Include="..\DroneWebApi\DroneWebApi.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Service Fabric Tools\Microsoft.VisualStudio.Azure.Fabric.ApplicationProject.targets" />
