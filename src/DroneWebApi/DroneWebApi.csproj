@@ -119,13 +119,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DroneActor.Interfaces\DroneActor.Interfaces.csproj">
-      <Project>{7b77119a-aa55-4913-93c3-53c29b83e91f}</Project>
-      <Name>DroneActor.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DroneQueryService.Interfaces\DroneQueryService.Interfaces.csproj">
-      <Project>{2C8ACF04-E315-4561-904A-9FF9770034CF}</Project>
-      <Name>DroneQueryService.Interfaces</Name>
+    <ProjectReference Include="..\DroneActor.Interfaces\Drones.Shared.csproj">
+      <Project>{7B77119A-AA55-4913-93C3-53C29B83E91F}</Project>
+      <Name>Drones.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

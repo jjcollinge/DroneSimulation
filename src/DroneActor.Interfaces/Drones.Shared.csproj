@@ -69,6 +69,8 @@
   <ItemGroup>
     <Compile Include="DroneCalculations.cs" />
     <Compile Include="DroneActorState.cs" />
+    <Compile Include="DroneQueryServiceFactory.cs" />
+    <Compile Include="IDroneQueryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IDroneActor.cs" />
   </ItemGroup>
