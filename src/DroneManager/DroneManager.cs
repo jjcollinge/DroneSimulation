@@ -65,8 +65,11 @@ namespace DroneManager
 
         public async Task UpdateDroneAsync(string id, DroneState updatedState)
         {
-            var drone = DroneServiceFactory.CreateDrone(id);
-            await drone.SetState(updatedState);
+            var drone = await DroneServiceFactory.GetDroneAsync(id);
+            if (drone != null)
+                await drone.SetState(updatedState);
+            else
+                throw new FabricServiceNotFoundException();
         }
 
         public Task<string> GenerateDroneIdAsync()

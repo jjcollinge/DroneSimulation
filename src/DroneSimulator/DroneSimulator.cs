@@ -17,6 +17,11 @@ namespace DroneSimulator
     {
         private readonly string DRONE_ENDPOINT = "http://localhost:8680/api/drone";
         private readonly TimeSpan SIMULATION_RATE = TimeSpan.FromSeconds(2);
+        private readonly int SIMULATION_SIZE = 40;
+
+        static int seed = Environment.TickCount;
+        static readonly ThreadLocal<Random> random =
+        new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
 
         public DroneSimulator(StatelessServiceContext context)
             : base(context)
@@ -34,7 +39,8 @@ namespace DroneSimulator
 
             // Generate initial simulation data
             var simulationRegistry = new List<string>();
-            string[] ids = { "0" }; //, "1", "2", "3", "4" };
+            string[] ids = new string[SIMULATION_SIZE];
+            for (int i = 0; i < SIMULATION_SIZE; i++) ids[i] = i.ToString();
             simulationRegistry.AddRange(ids);
 
             // Load initial simulation data
@@ -58,18 +64,16 @@ namespace DroneSimulator
 
         private async Task UpdateDrone(string id)
         {
-            var random = new Random();
-
             var payload = new
             {
                 Id = id,
                 State = new
                 {
-                    Longitude = (Decimal)random.NextDouble(),
-                    Latitude = (Decimal)random.NextDouble(),
-                    Altitude = random.Next(),
-                    Heading = random.Next(),
-                    Speed = random.Next()
+                    Longitude = (Decimal)random.Value.NextDouble(),
+                    Latitude = (Decimal)random.Value.NextDouble(),
+                    Altitude = random.Value.Next(),
+                    Heading = random.Value.Next(),
+                    Speed = random.Value.Next()
                 }
             };
 
