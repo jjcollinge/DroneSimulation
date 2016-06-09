@@ -24,44 +24,95 @@ namespace DroneActor
         #endregion
 
         #region control methods
-        public Task MoveUp()
+        public async Task MoveUp()
         {
-            throw new NotImplementedException();
+            await UpdateState(state =>
+            {
+                state.Altitude = DroneCalculations.Clamp(state.Altitude + state.Speed,
+                                                         state.Altitude + DroneCalculations.MIN_VERTICAL_SPEED,
+                                                         state.Altitude + DroneCalculations.MAX_VERTICAL_SPEED);
+                return state;
+            });
         }
 
-        public Task MoveDown()
+        public async Task MoveDown()
         {
-            throw new NotImplementedException();
+            //TODO: Keep above 0
+            await UpdateState(state =>
+            {
+                state.Altitude = DroneCalculations.Clamp(state.Altitude - state.Speed,
+                                                         state.Altitude - DroneCalculations.MIN_VERTICAL_SPEED,
+                                                         state.Altitude - DroneCalculations.MAX_VERTICAL_SPEED);
+                return state;
+            });
         }
 
-        public Task MoveRight()
+        public async Task MoveRight()
         {
-            throw new NotImplementedException();
+            await UpdateState(state =>
+            {
+                state.Longitude = DroneCalculations.Clamp(state.Longitude + state.Speed,
+                                                          state.Longitude + DroneCalculations.MIN_HORIZONTAL_SPEED,
+                                                          state.Longitude + DroneCalculations.MAX_HORIZONTAL_SPEED);
+                return state;
+            });
         }
 
-        public Task MoveLeft()
+        public async Task MoveLeft()
         {
-            throw new NotImplementedException();
+            await UpdateState(state =>
+            {
+                state.Longitude = DroneCalculations.Clamp(state.Longitude - state.Speed,
+                                                          state.Longitude - DroneCalculations.MIN_HORIZONTAL_SPEED,
+                                                          state.Longitude - DroneCalculations.MAX_HORIZONTAL_SPEED);
+                return state;
+            });
         }
 
-        public Task MoveForward()
+        public async Task MoveForward()
         {
-            throw new NotImplementedException();
+            await UpdateState(state =>
+            {
+                state.Latitude = DroneCalculations.Clamp(state.Latitude + state.Speed,
+                                                         state.Latitude + DroneCalculations.MIN_HORIZONTAL_SPEED,
+                                                         state.Latitude + DroneCalculations.MAX_HORIZONTAL_SPEED);
+                return state;
+            });
         }
 
-        public Task MoveBackwards()
+        public async Task MoveBackwards()
         {
-            throw new NotImplementedException();
+            await UpdateState(state =>
+            {
+                state.Latitude = DroneCalculations.Clamp(state.Latitude - state.Speed,
+                                                         state.Latitude - DroneCalculations.MIN_HORIZONTAL_SPEED,
+                                                         state.Latitude - DroneCalculations.MAX_HORIZONTAL_SPEED);
+                return state;
+            });
         }
 
-        public Task RotateClockwise(int degrees)
+        public async Task RotateClockwise(int degrees)
         {
-            throw new NotImplementedException();
+            //TODO: Keep within 360*
+            await UpdateState(state =>
+            {
+                state.Heading = DroneCalculations.Clamp(state.Heading + state.Speed,
+                                                        state.Heading + DroneCalculations.MAX_ROTATION_SPEED,
+                                                        state.Heading + DroneCalculations.MIN_ROTATION_SPEED);
+                return state;
+            });
         }
 
-        public Task RotateAntiClockwise(int degrees)
+        public async Task RotateAntiClockwise(int degrees)
         {
-            throw new NotImplementedException();
+            //TODO: Keep within 360*
+            await UpdateState(state =>
+            {
+                state.Heading = DroneCalculations.Clamp(state.Heading - state.Speed,
+                                                        state.Heading - DroneCalculations.MAX_ROTATION_SPEED,
+                                                        state.Heading - DroneCalculations.MIN_ROTATION_SPEED);
+                return state;
+            });
         }
         #endregion
 
