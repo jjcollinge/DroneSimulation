@@ -68,9 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Utility\DroneCalculations.cs" />
-    <Compile Include="DroneModel.cs" />
+    <Compile Include="Drone.cs" />
     <Compile Include="Factories\DroneServiceFactory.cs" />
-    <Compile Include="Interfaces\IDroneManagementService.cs" />
+    <Compile Include="Interfaces\IDroneManager.cs" />
     <Compile Include="Interfaces\IDroneRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\IDroneActor.cs" />

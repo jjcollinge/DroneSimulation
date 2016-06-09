@@ -24,27 +24,27 @@ namespace DroneRegistry
         private const string DICTIONARY_KEY = "DRONES_KEY";
         private bool _initialised = false;
 
-        private Task<IReliableDictionary<string, ConcurrentBag<string>>> _drones => this.StateManager.GetOrAddAsync<IReliableDictionary<string, ConcurrentBag<string>>>(DICTIONARY_NAME);
+        private Task<IReliableDictionary<string, List<string>>> _drones => this.StateManager.GetOrAddAsync<IReliableDictionary<string, List<string>>>(DICTIONARY_NAME);
 
         public DroneRegistry(StatefulServiceContext context)
             : base(context)
         {}
 
-        public async Task<ConcurrentBag<string>> GetDronesAsync()
+        public async Task<List<string>> GetDronesAsync()
         {
             if (!_initialised) await Initialise();
 
-            ConcurrentBag<string> droneBag = null;
+            List<string> droneList = null;
 
             using (var tx = this.StateManager.CreateTransaction())
             {
                 var drones = await _drones;
-                var droneBagKVP = await (await drones.CreateLinqAsyncEnumerable(tx))
+                var droneKVP = await (await drones.CreateLinqAsyncEnumerable(tx))
                     .First(o => o.Key == DICTIONARY_KEY);
-                droneBag = droneBagKVP.Value;
+                droneList = droneKVP.Value;
             }
 
-            return droneBag;
+            return droneList;
         }
 
         public async Task AddDroneAsync(string droneId)
@@ -53,7 +53,7 @@ namespace DroneRegistry
 
             using (var tx = this.StateManager.CreateTransaction())
             {
-                var drones = await GetDroneBag(tx);
+                var drones = await GetDroneList(tx);
                 drones.Add(droneId);
                 await tx.CommitAsync();
             }
@@ -65,14 +65,8 @@ namespace DroneRegistry
 
             using (var tx = this.StateManager.CreateTransaction())
             {
-                var drones = await GetDroneBag(tx);
-
-                // Potentially dangerous
-                lock (drones)
-                {
-                    drones = new ConcurrentBag<string>(drones.Except(new[] { droneId }));
-                }
-
+                var drones = await GetDroneList(tx);
+                drones.Remove(droneId);
                 await tx.CommitAsync();
             }
         }
@@ -85,7 +79,7 @@ namespace DroneRegistry
 
             using (var tx = this.StateManager.CreateTransaction())
             {
-                var drones = await GetDroneBag(tx);
+                var drones = await GetDroneList(tx);
                 contains = drones.Contains(droneId);
                 await tx.CommitAsync();
             }
@@ -100,21 +94,21 @@ namespace DroneRegistry
             var count = 0L;
             using(var tx = this.StateManager.CreateTransaction())
             {
-                var droneBag = await GetDroneBag(tx);
-                count = droneBag.Count;
+                var drones = await GetDroneList(tx);
+                count = drones.Count;
             }
 
             return count;
         }
 
-        private async Task<ConcurrentBag<string>> GetDroneBag(ITransaction tx)
+        private async Task<List<string>> GetDroneList(ITransaction tx)
         {
             var drones = await _drones;
-            var droneBag = await (await drones.CreateLinqAsyncEnumerable(tx))
+            var droneList = await (await drones.CreateLinqAsyncEnumerable(tx))
                 .Where(o => o.Key == DICTIONARY_KEY)
                 .Select(o => o.Value)
                 .First();
-            return droneBag;
+            return droneList;
         }
 
         private async Task Initialise()
@@ -124,7 +118,7 @@ namespace DroneRegistry
                 var drones = _drones.Result;
                 if (drones.GetCountAsync(tx).Result < 1)
                 {
-                    await drones.AddAsync(tx, DICTIONARY_KEY, new ConcurrentBag<string>());
+                    await drones.AddAsync(tx, DICTIONARY_KEY, new List<string>());
                     await tx.CommitAsync();
                     _initialised = true;
                     ServiceEventSource.Current.Message($"Registry initialised with {drones.GetCountAsync(tx).Result.ToString()} items");

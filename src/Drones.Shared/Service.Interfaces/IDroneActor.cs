@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
+using System.Runtime.Serialization;
 
 namespace Drones.Shared
 {
     public interface IDroneActor : IActor
     {
         #region setters
-        Task SetState(DroneModel model);
+        Task SetState(DroneState model);
         Task SetCoordinates(double lon, double lat);
         Task SetAltitude(int alt);
         Task SetHeading(int heading);
@@ -23,7 +24,7 @@ namespace Drones.Shared
         Task<int> GetAltitude();
         Task<int> GetHeading();
         Task<int> GetSpeed();
-        Task<DroneModel> GetState();
+        Task<DroneState> GetState();
         #endregion
     }
 }

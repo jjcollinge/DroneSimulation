@@ -10,7 +10,7 @@ namespace Drones.Shared
 {
     public interface IDroneRegistry : IService
     {
-        Task<ConcurrentBag<string>> GetDronesAsync();
+        Task<List<string>> GetDronesAsync();
         Task AddDroneAsync(string droneId);
         Task RemoveDroneAsync(string droneId);
         Task<bool> ContainsDroneIdAsync(string droneId);

@@ -4,56 +4,50 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System;
 
 namespace DroneWebApi.Controllers
 {
     public class DroneController : ApiController
     {
-        private IDroneManagementService _droneService;
+        private IDroneManager _droneManager;
 
         public DroneController()
         {
-            _droneService = DroneServiceFactory.CreateDroneManagementService();
+            _droneManager = DroneServiceFactory.CreateDroneManager();
         }
 
         // GET api/drone 
-        public async Task<IList<DroneModel>> GetAsync()
+        public async Task<IEnumerable<DronePayload>> GetAsync()
         {
-            var drones = await _droneService.GetDronesAsync();
-
-            ConcurrentBag<DroneModel> droneStates = new ConcurrentBag<DroneModel>();
-            Parallel.For(0, drones.Count, async i =>
-            {
-                droneStates.Add(await drones[i].GetState());
-            });
-
-            var droneList = new List<DroneModel>(droneStates);
-            return droneList;
+            var drones = await _droneManager.GetDronesAsync();
+            return drones;
         }
 
         // GET api/drone/5 
-        public async Task<DroneModel> GetAsync(int id)
+        public async Task<DronePayload> GetAsync(int id)
         {
-            var drone = await _droneService.GetDroneAsync(id.ToString());
-            return await drone.GetState();
+            var drone = await _droneManager.GetDroneAsync(id.ToString());
+            return drone;
         }
 
         // POST api/drone 
-        public async Task PostAsync([FromBody]DroneModel model)
+        public async Task PostAsync([FromBody]DroneState droneState)
         {
-            var newDroneId = await _droneService.GenerateDroneIdAsync();
-            await _droneService.AddDroneAsync(newDroneId, model);
+            var newDroneId = await _droneManager.GenerateDroneIdAsync();
+            await _droneManager.AddDroneAsync(newDroneId, droneState);
         }
 
         // PUT api/drone/5 
-        public void Put(int id, [FromBody]string value)
+        public async Task Put(DronePayload updateDrone)
         {
+            await _droneManager.UpdateDroneAsync(updateDrone.Id, updateDrone.State);
         }
 
         // DELETE api/drone/5 
         public async Task Delete(int id)
         {
-            await _droneService.RemoveDroneAsync(id.ToString());
+            await _droneManager.RemoveDroneAsync(id.ToString());
         }
     }
 }

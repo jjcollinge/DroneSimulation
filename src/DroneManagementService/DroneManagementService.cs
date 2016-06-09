@@ -10,13 +10,15 @@ using Drones.Shared;
 using System.Collections.Concurrent;
 using Microsoft.ServiceFabric.Services.Remoting.FabricTransport.Runtime;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
+using Microsoft.ServiceFabric.Actors.Client;
+using Microsoft.ServiceFabric.Actors;
 
 namespace DroneManagementService
 {
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
     /// </summary>
-    internal sealed class DroneManagementService : StatelessService, IDroneManagementService
+    internal sealed class DroneManagementService : StatelessService, IDroneManager
     {
         private static IDroneRegistry _droneRegistry;
 
@@ -26,7 +28,7 @@ namespace DroneManagementService
             _droneRegistry = DroneServiceFactory.CreateDroneRegistry();
         }
 
-        public async Task AddDroneAsync(string id, DroneModel droneModel)
+        public async Task AddDroneAsync(string id, DroneState droneModel)
         {
             var drone = DroneServiceFactory.CreateDrone(id);
             var task0 = RegisterDroneId(id);
@@ -39,7 +41,7 @@ namespace DroneManagementService
             return await DroneServiceFactory.GetDroneAsync(id);
         }
 
-        public async Task<IList<IDroneActor>> GetDronesAsync()
+        public async Task<IList<IDroneActor>> GetDroneAsync()
         {
             var droneRegistry = DroneServiceFactory.CreateDroneRegistry();
             var droneIds = (await droneRegistry.GetDronesAsync()).ToList();

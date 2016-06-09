@@ -13,12 +13,12 @@ namespace Drones.Shared
 {
     public class DroneServiceFactory
     {
-        private static string DRONE_MANAGEMENT_URI = "fabric:/Drones/DroneManagementService";
+        private static string DRONE_MANAGEMENT_URI = "fabric:/Drones/DroneManager";
         private static string DRONE_REGISTRY_URI = "fabric:/Drones/DroneRegistry";
 
-        public static IDroneManagementService CreateDroneManagementService()
+        public static IDroneManager CreateDroneManager()
         {
-            return ServiceProxy.Create<IDroneManagementService>(new Uri(DRONE_MANAGEMENT_URI));
+            return ServiceProxy.Create<IDroneManager>(new Uri(DRONE_MANAGEMENT_URI));
         }
 
         public static IDroneRegistry CreateDroneRegistry()
@@ -40,7 +40,14 @@ namespace Drones.Shared
 
         public static IDroneActor CreateDrone(string id)
         {
-            return ActorProxy.Create<IDroneActor>(new ActorId(id));
+            var actor = ActorProxy.Create<IDroneActor>(new ActorId(id));
+            return actor;
+        }
+
+        public static Task DeleteDroneAsync(string id)
+        {
+            //var droneToDelate = CreateDrone(id);
+            return;
         }
     }
 }

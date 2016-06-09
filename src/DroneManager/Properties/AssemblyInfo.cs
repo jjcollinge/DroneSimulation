@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DroneActor")]
+[assembly: AssemblyTitle("DroneManager")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DroneActor")]
+[assembly: AssemblyProduct("DroneManager")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f6cee34e-77cf-4d70-a799-7a74ed1c0eb4")]
+[assembly: Guid("94e878a1-1b2c-4f2a-b9e5-805e4ade045a")]
 
 // Version information for an assembly consists of the following four values:
 //

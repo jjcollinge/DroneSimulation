@@ -3,7 +3,7 @@
    <ServiceTypes>
       <StatefulServiceType ServiceTypeName="DroneActorServiceType" HasPersistedState="true">
          <Extensions>
-            <Extension Name="__GeneratedServiceType__" GeneratedId="61e04376-256e-4b1a-ab49-110f41359916|Persisted">
+            <Extension Name="__GeneratedServiceType__" GeneratedId="e9acdce9-6a59-4875-bac2-ace0afd0ae2b|Persisted">
                <GeneratedNames xmlns="http://schemas.microsoft.com/2015/03/fabact-no-schema">
                   <DefaultService Name="DroneActorService" />
                   <ServiceEndpoint Name="DroneActorServiceEndpoint" />

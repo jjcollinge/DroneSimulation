@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Drones.Shared
 {
     [DataContract]
-    public class DroneModel
+    public class DroneState
     {
         [DataMember]
         public int Altitude { get; set; }

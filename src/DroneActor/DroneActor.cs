@@ -20,7 +20,7 @@ namespace DroneActor
         #endregion
 
         #region private data members
-        private delegate DroneModel Update(DroneModel state);
+        private delegate DroneState Update(DroneState state);
         #endregion
 
         #region methods
@@ -28,15 +28,15 @@ namespace DroneActor
         {
             return Task.FromResult(this.GetActorId().ToString());
         }
-        
-        public async Task SetState(DroneModel model)
+
+        public async Task SetState(DroneState model)
         {
             await this.StateManager.SetStateAsync(STATE_IDENTIFIER, model);
         }
 
         public async Task SetAltitude(int alt)
         {
-            await UpdateState(state => 
+            await UpdateState(state =>
             {
                 state.Altitude = alt;
                 return state;
@@ -96,9 +96,9 @@ namespace DroneActor
             return state.Speed;
         }
 
-        public async Task<DroneModel> GetState()
+        public async Task<DroneState> GetState()
         {
-            return await this.StateManager.GetStateAsync<DroneModel>(STATE_IDENTIFIER);
+            return await this.StateManager.GetStateAsync<DroneState>(STATE_IDENTIFIER);
         }
         #endregion
 
@@ -108,8 +108,8 @@ namespace DroneActor
             if (!(await this.StateManager.ContainsStateAsync(STATE_IDENTIFIER)))
             {
                 // Initialise state
-                var state = new DroneModel();
-                await this.StateManager.TryAddStateAsync<DroneModel>(STATE_IDENTIFIER, state);
+                var state = new DroneState();
+                await this.StateManager.TryAddStateAsync<DroneState>(STATE_IDENTIFIER, state);
                 ActorEventSource.Current.ActorMessage(this, "new actor state initialised.");
             }
 
@@ -127,13 +127,13 @@ namespace DroneActor
         #region private methods
         private async Task UpdateState(Update update)
         {
-            DroneModel state;
-            var condition = await this.StateManager.TryGetStateAsync<DroneModel>(STATE_IDENTIFIER);
+            DroneState state;
+            var condition = await this.StateManager.TryGetStateAsync<DroneState>(STATE_IDENTIFIER);
             if (condition.HasValue)
             {
                 state = condition.Value;
                 state = update(state);
-                await this.StateManager.SetStateAsync<DroneModel>(STATE_IDENTIFIER, state);
+                await this.StateManager.SetStateAsync<DroneState>(STATE_IDENTIFIER, state);
             }
         }
         #endregion
