@@ -10,7 +10,7 @@ namespace DroneQueryService.Interfaces
 {
     public class DroneQueryServiceFactory
     {
-        private static string DRONEQUERYSERVICE_URI = "fabric:/drones/DroneQueryService";
+        private static string DRONEQUERYSERVICE_URI = "fabric:/Drones/DroneQueryService";
         public static IDroneQueryService CreateDroneQueryService()
         {
             return ServiceProxy.Create<IDroneQueryService>(new Uri(DRONEQUERYSERVICE_URI), new ServicePartitionKey(0));
