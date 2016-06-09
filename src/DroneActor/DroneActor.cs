@@ -15,21 +15,18 @@ namespace DroneActor
     {
         #region constants
         private const string STATE_IDENTIFIER = "DRONESTATE";
+        private const int MAX_HEADING = 359;
+        private const int MIN_HEADING = 0;
         #endregion
 
         #region private data members
         private delegate DroneModel Update(DroneModel state);
         #endregion
 
-        #region constructors
-        public DroneActor()
-        {}
-        #endregion
-
         #region methods
-        public string GetId()
+        public Task<string> GetIdAsync()
         {
-            return this.GetActorId().ToString();
+            return Task.FromResult(this.GetActorId().ToString());
         }
         
         public async Task SetState(DroneModel model)
@@ -58,12 +55,23 @@ namespace DroneActor
 
         public async Task SetHeading(int heading)
         {
+            var clampedHeading = DroneCalculations.Clamp(heading, MIN_HEADING, MAX_HEADING);
             await UpdateState(state =>
             {
-                state.Heading = heading;
+                state.Heading = clampedHeading;
                 return state;
             });
         }
+
+        public async Task SetSpeed(int speed)
+        {
+            await UpdateState(state =>
+            {
+                state.Speed = speed;
+                return state;
+            });
+        }
+
         public async Task<Tuple<double, double>> GetCoordinates()
         {
             var state = await GetState();
@@ -80,6 +88,12 @@ namespace DroneActor
         {
             var state = await GetState();
             return state.Heading;
+        }
+
+        public async Task<int> GetSpeed()
+        {
+            var state = await GetState();
+            return state.Speed;
         }
 
         public async Task<DroneModel> GetState()

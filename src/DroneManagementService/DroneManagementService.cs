@@ -9,6 +9,7 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using Drones.Shared;
 using System.Collections.Concurrent;
 using Microsoft.ServiceFabric.Services.Remoting.FabricTransport.Runtime;
+using Microsoft.ServiceFabric.Services.Remoting.Runtime;
 
 namespace DroneManagementService
 {
@@ -35,23 +36,29 @@ namespace DroneManagementService
 
         public async Task<IDroneActor> GetDroneAsync(string id)
         {
-            return await DroneServiceFactory.GetDrone(id);
+            return await DroneServiceFactory.GetDroneAsync(id);
         }
 
         public async Task<IList<IDroneActor>> GetDronesAsync()
         {
             var droneRegistry = DroneServiceFactory.CreateDroneRegistry();
-            var droneIds = droneRegistry.GetDronesAsync().Result.ToList();
+            var droneIds = (await droneRegistry.GetDronesAsync()).ToList();
 
             ConcurrentBag<IDroneActor> drones = null;
-            Parallel.For(0, droneIds.Count, async i =>
+            if(droneIds.Count > 0)
             {
-                var drone = await DroneServiceFactory.GetDrone(droneIds[i]);
-                drones.Add(drone);
-            });
+                Parallel.For(0, droneIds.Count, async i =>
+                {
+                    var drone = await DroneServiceFactory.GetDroneAsync(droneIds[i]);
+                    drones.Add(drone);
+                });
+            }
+            else
+            {
+                drones = new ConcurrentBag<IDroneActor>();
+            }
 
-            await Task.WhenAll();
-            return drones?.ToList();
+            return drones.ToList() as IList<IDroneActor>;
         }
 
         public Task RemoveDroneAsync(string id)
@@ -59,22 +66,22 @@ namespace DroneManagementService
             throw new NotImplementedException();
         }
 
-        private static async Task RegisterDroneId(string id)
-        {
-            await _droneRegistry.AddDroneAsync(id);
-        }
-
-        private static async Task<string> GenerateDroneId()
+        public async Task<string> GenerateDroneIdAsync()
         {
             var count = await _droneRegistry.GetDroneCountAsync();
             return count.ToString();
+        }
+
+        private static async Task RegisterDroneId(string id)
+        {
+            await _droneRegistry.AddDroneAsync(id);
         }
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
             return new[]{
                 new ServiceInstanceListener(
-                    (context) => new FabricTransportServiceRemotingListener(context, this))};
+                    (context) => this.CreateServiceRemotingListener(context)) };
         }
     }
 }

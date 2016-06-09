@@ -14,13 +14,15 @@ namespace Drones.Shared
         Task SetCoordinates(double lon, double lat);
         Task SetAltitude(int alt);
         Task SetHeading(int heading);
+        Task SetSpeed(int speed);
         #endregion
 
         #region getters
-        string GetId();
+        Task<string> GetIdAsync();
         Task<Tuple<double, double>> GetCoordinates();
         Task<int> GetAltitude();
         Task<int> GetHeading();
+        Task<int> GetSpeed();
         Task<DroneModel> GetState();
         #endregion
     }
