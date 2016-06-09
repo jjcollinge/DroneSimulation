@@ -23,7 +23,49 @@ namespace DroneActor
         private delegate DroneState Update(DroneState state);
         #endregion
 
-        #region methods
+        #region control methods
+        public Task MoveUp()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task MoveDown()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task MoveRight()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task MoveLeft()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task MoveForward()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task MoveBackwards()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RotateClockwise(int degrees)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RotateAntiClockwise(int degrees)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region getters and setters
         public Task<string> GetIdAsync()
         {
             return Task.FromResult(this.GetActorId().ToString());
