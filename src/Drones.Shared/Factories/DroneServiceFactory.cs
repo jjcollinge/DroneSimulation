@@ -47,7 +47,7 @@ namespace Drones.Shared
         public static Task DeleteDroneAsync(string id)
         {
             //var droneToDelate = CreateDrone(id);
-            return;
+            return Task.FromResult(true);
         }
     }
 }

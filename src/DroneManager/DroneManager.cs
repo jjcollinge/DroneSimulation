@@ -69,11 +69,10 @@ namespace DroneManager
             await drone.SetState(updatedState);
         }
 
-        public async Task<string> GenerateDroneIdAsync()
+        public Task<string> GenerateDroneIdAsync()
         {
-            var droneRegistry = DroneServiceFactory.CreateDroneRegistry();
-            var count = await droneRegistry.GetDroneCountAsync();
-            return count.ToString();
+            var id = Guid.NewGuid();
+            return Task.FromResult(id.ToString());
         }
 
         private static async Task RegisterDroneId(string id)

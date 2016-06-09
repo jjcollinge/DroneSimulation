@@ -25,7 +25,7 @@ namespace DroneWebApi.Controllers
         }
 
         // GET api/drone/5 
-        public async Task<DronePayload> GetAsync(int id)
+        public async Task<DronePayload> GetAsync(string id)
         {
             var drone = await _droneManager.GetDroneAsync(id.ToString());
             return drone;
@@ -45,7 +45,7 @@ namespace DroneWebApi.Controllers
         }
 
         // DELETE api/drone/5 
-        public async Task Delete(int id)
+        public async Task Delete(string id)
         {
             await _droneManager.RemoveDroneAsync(id.ToString());
         }
