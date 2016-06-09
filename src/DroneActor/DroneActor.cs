@@ -6,23 +6,37 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Actors.Client;
-using DroneActor.Interfaces;
-using DroneQueryService.Interfaces;
+using Drones.Shared;
 
 namespace DroneActor
 {
     [StatePersistence(StatePersistence.Persisted)]
-    internal class DroneActor : Actor, IDroneActor
+    internal sealed class DroneActor : Actor, IDroneActor
     {
         #region constants
         private const string STATE_IDENTIFIER = "DRONESTATE";
         #endregion
 
         #region private data members
-        private delegate DroneActorState Update(DroneActorState state);
+        private delegate DroneModel Update(DroneModel state);
+        #endregion
+
+        #region constructors
+        public DroneActor()
+        {}
         #endregion
 
         #region methods
+        public string GetId()
+        {
+            return this.GetActorId().ToString();
+        }
+        
+        public async Task SetState(DroneModel model)
+        {
+            await this.StateManager.SetStateAsync(STATE_IDENTIFIER, model);
+        }
+
         public async Task SetAltitude(int alt)
         {
             await UpdateState(state => 
@@ -68,9 +82,9 @@ namespace DroneActor
             return state.Heading;
         }
 
-        public async Task<DroneActorState> GetState()
+        public async Task<DroneModel> GetState()
         {
-            return await this.StateManager.GetStateAsync<DroneActorState>(STATE_IDENTIFIER);
+            return await this.StateManager.GetStateAsync<DroneModel>(STATE_IDENTIFIER);
         }
         #endregion
 
@@ -80,8 +94,8 @@ namespace DroneActor
             if (!(await this.StateManager.ContainsStateAsync(STATE_IDENTIFIER)))
             {
                 // Initialise state
-                var state = new DroneActorState();
-                await this.StateManager.TryAddStateAsync<DroneActorState>(STATE_IDENTIFIER, state);
+                var state = new DroneModel();
+                await this.StateManager.TryAddStateAsync<DroneModel>(STATE_IDENTIFIER, state);
                 ActorEventSource.Current.ActorMessage(this, "new actor state initialised.");
             }
 
@@ -96,19 +110,16 @@ namespace DroneActor
         }
         #endregion
 
-        #region public methods
-        #endregion
-
         #region private methods
         private async Task UpdateState(Update update)
         {
-            DroneActorState state;
-            var condition = await this.StateManager.TryGetStateAsync<DroneActorState>(STATE_IDENTIFIER);
+            DroneModel state;
+            var condition = await this.StateManager.TryGetStateAsync<DroneModel>(STATE_IDENTIFIER);
             if (condition.HasValue)
             {
                 state = condition.Value;
                 state = update(state);
-                await this.StateManager.SetStateAsync<DroneActorState>(STATE_IDENTIFIER, state);
+                await this.StateManager.SetStateAsync<DroneModel>(STATE_IDENTIFIER, state);
             }
         }
         #endregion

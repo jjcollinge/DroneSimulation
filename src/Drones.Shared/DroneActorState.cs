@@ -5,10 +5,10 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DroneActor.Interfaces
+namespace Drones.Shared
 {
     [DataContract]
-    public class DroneActorState
+    public class DroneModel
     {
         #region constants
         private const int MAX_HEADING = 360;

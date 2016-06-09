@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DroneActor.Interfaces
+namespace Drones.Shared
 {
     public class DroneCalculations
     {

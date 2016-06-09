@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Runtime;
 
-namespace DroneQueryService
+namespace DroneManagementService
 {
-    [EventSource(Name = "MyCompany-Drones-DroneQueryService")]
+    [EventSource(Name = "MyCompany-Drones-DroneManagementService")]
     internal sealed class ServiceEventSource : EventSource
     {
         public static readonly ServiceEventSource Current = new ServiceEventSource();
@@ -65,7 +65,7 @@ namespace DroneQueryService
         }
 
         [NonEvent]
-        public void ServiceMessage(StatefulService service, string message, params object[] args)
+        public void ServiceMessage(StatelessService service, string message, params object[] args)
         {
             if (this.IsEnabled())
             {
@@ -73,7 +73,7 @@ namespace DroneQueryService
                 ServiceMessage(
                     service.Context.ServiceName.ToString(),
                     service.Context.ServiceTypeName,
-                    service.Context.ReplicaId,
+                    service.Context.InstanceId,
                     service.Context.PartitionId,
                     service.Context.CodePackageActivationContext.ApplicationName,
                     service.Context.CodePackageActivationContext.ApplicationTypeName,

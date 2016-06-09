@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Runtime;
 
-namespace DroneQueryService
+namespace DroneManagementService
 {
     internal static class Program
     {
@@ -20,10 +21,10 @@ namespace DroneQueryService
                 // When Service Fabric creates an instance of this service type,
                 // an instance of the class is created in this host process.
 
-                ServiceRuntime.RegisterServiceAsync("DroneQueryServiceType",
-                    context => new DroneQueryService(context)).GetAwaiter().GetResult();
+                ServiceRuntime.RegisterServiceAsync("DroneManagementServiceType",
+                    context => new DroneManagementService(context)).GetAwaiter().GetResult();
 
-                ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(DroneQueryService).Name);
+                ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(DroneManagementService).Name);
 
                 // Prevents this host process from terminating so services keep running.
                 Thread.Sleep(Timeout.Infinite);

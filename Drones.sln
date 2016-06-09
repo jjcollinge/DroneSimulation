@@ -7,11 +7,13 @@ Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "Drones", "src\Drones\Drones
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneActor", "src\DroneActor\DroneActor.csproj", "{60DF3652-BDC6-4301-8E8A-189E88F4481B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drones.Shared", "src\DroneActor.Interfaces\Drones.Shared.csproj", "{7B77119A-AA55-4913-93C3-53C29B83E91F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneQueryService", "src\DroneQueryService\DroneQueryService.csproj", "{BC09D649-4749-4392-961D-D93B6D126C57}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneWebApi", "src\DroneWebApi\DroneWebApi.csproj", "{4D3B6E26-4367-4F2F-9789-27C473E824E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneRegistry", "src\DroneRegistry\DroneRegistry.csproj", "{DF47C24F-649B-4C9C-9E7C-C565551CD5B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneManagementService", "src\DroneManagementService\DroneManagementService.csproj", "{15230D3D-70CA-4E2C-B423-60867F1F7833}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drones.Shared", "src\Drones.Shared\Drones.Shared.csproj", "{7B77119A-AA55-4913-93C3-53C29B83E91F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,24 +37,30 @@ Global
 		{60DF3652-BDC6-4301-8E8A-189E88F4481B}.Release|Any CPU.ActiveCfg = Release|x64
 		{60DF3652-BDC6-4301-8E8A-189E88F4481B}.Release|x64.ActiveCfg = Release|x64
 		{60DF3652-BDC6-4301-8E8A-189E88F4481B}.Release|x64.Build.0 = Release|x64
-		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Debug|x64.ActiveCfg = Debug|x64
-		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Debug|x64.Build.0 = Debug|x64
-		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Release|Any CPU.ActiveCfg = Release|x64
-		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Release|x64.ActiveCfg = Release|x64
-		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Release|x64.Build.0 = Release|x64
-		{BC09D649-4749-4392-961D-D93B6D126C57}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{BC09D649-4749-4392-961D-D93B6D126C57}.Debug|x64.ActiveCfg = Debug|x64
-		{BC09D649-4749-4392-961D-D93B6D126C57}.Debug|x64.Build.0 = Debug|x64
-		{BC09D649-4749-4392-961D-D93B6D126C57}.Release|Any CPU.ActiveCfg = Release|x64
-		{BC09D649-4749-4392-961D-D93B6D126C57}.Release|x64.ActiveCfg = Release|x64
-		{BC09D649-4749-4392-961D-D93B6D126C57}.Release|x64.Build.0 = Release|x64
 		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Debug|x64.ActiveCfg = Debug|x64
 		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Debug|x64.Build.0 = Debug|x64
 		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Release|Any CPU.ActiveCfg = Release|x64
 		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Release|x64.ActiveCfg = Release|x64
 		{4D3B6E26-4367-4F2F-9789-27C473E824E0}.Release|x64.Build.0 = Release|x64
+		{DF47C24F-649B-4C9C-9E7C-C565551CD5B3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{DF47C24F-649B-4C9C-9E7C-C565551CD5B3}.Debug|x64.ActiveCfg = Debug|x64
+		{DF47C24F-649B-4C9C-9E7C-C565551CD5B3}.Debug|x64.Build.0 = Debug|x64
+		{DF47C24F-649B-4C9C-9E7C-C565551CD5B3}.Release|Any CPU.ActiveCfg = Release|x64
+		{DF47C24F-649B-4C9C-9E7C-C565551CD5B3}.Release|x64.ActiveCfg = Release|x64
+		{DF47C24F-649B-4C9C-9E7C-C565551CD5B3}.Release|x64.Build.0 = Release|x64
+		{15230D3D-70CA-4E2C-B423-60867F1F7833}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{15230D3D-70CA-4E2C-B423-60867F1F7833}.Debug|x64.ActiveCfg = Debug|x64
+		{15230D3D-70CA-4E2C-B423-60867F1F7833}.Debug|x64.Build.0 = Debug|x64
+		{15230D3D-70CA-4E2C-B423-60867F1F7833}.Release|Any CPU.ActiveCfg = Release|x64
+		{15230D3D-70CA-4E2C-B423-60867F1F7833}.Release|x64.ActiveCfg = Release|x64
+		{15230D3D-70CA-4E2C-B423-60867F1F7833}.Release|x64.Build.0 = Release|x64
+		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Debug|x64.ActiveCfg = Debug|x64
+		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Debug|x64.Build.0 = Debug|x64
+		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Release|Any CPU.ActiveCfg = Release|x64
+		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Release|x64.ActiveCfg = Release|x64
+		{7B77119A-AA55-4913-93C3-53C29B83E91F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
