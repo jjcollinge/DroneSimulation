@@ -24,6 +24,7 @@ namespace DroneRegistry
         private const string DICTIONARY_KEY = "DRONES_KEY";
         private bool _initialised = false;
 
+        // A single item dictionary to store a list of drone ids
         private Task<IReliableDictionary<string, List<string>>> _drones => this.StateManager.GetOrAddAsync<IReliableDictionary<string, List<string>>>(DICTIONARY_NAME);
 
         public DroneRegistry(StatefulServiceContext context)
@@ -115,14 +116,16 @@ namespace DroneRegistry
         {
             using (var tx = this.StateManager.CreateTransaction())
             {
-                var drones = _drones.Result;
+                var drones = await _drones;
+
+                // Only initialise the registry if it is empty
                 if (drones.GetCountAsync(tx).Result < 1)
                 {
                     await drones.AddAsync(tx, DICTIONARY_KEY, registry);
-                    await tx.CommitAsync();
                     _initialised = true;
-                    ServiceEventSource.Current.Message($"Registry initialised with {drones.GetCountAsync(tx).Result.ToString()} items");
+                    ServiceEventSource.Current.Message($"Registry initialised with {registry.Count} items");
                 }
+                await tx.CommitAsync();
             }
         }
 

@@ -1,60 +1,70 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="DronesType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
-   <Parameters>
-      <Parameter Name="DroneSimulator_InstanceCount" DefaultValue="-1" />
-      <Parameter Name="DroneManager_InstanceCount" DefaultValue="-1" />
-      <Parameter Name="DroneRegistry_MinReplicaSetSize" DefaultValue="2" />
-      <Parameter Name="DroneRegistry_PartitionCount" DefaultValue="1" />
-      <Parameter Name="DroneRegistry_TargetReplicaSetSize" DefaultValue="3" />
-      <Parameter Name="DroneWebApi_InstanceCount" DefaultValue="-1" />
-      <Parameter Name="DroneActorService_PartitionCount" DefaultValue="10" />
-      <Parameter Name="DroneActorService_MinReplicaSetSize" DefaultValue="2" />
-      <Parameter Name="DroneActorService_TargetReplicaSetSize" DefaultValue="3" />
-   </Parameters>
-   <ServiceManifestImport>
-      <ServiceManifestRef ServiceManifestName="DroneSimulatorPkg" ServiceManifestVersion="1.0.0" />
-      <ConfigOverrides />
-   </ServiceManifestImport>
-   <ServiceManifestImport>
-      <ServiceManifestRef ServiceManifestName="DroneManagerPkg" ServiceManifestVersion="1.0.0" />
-      <ConfigOverrides />
-   </ServiceManifestImport>
-   <ServiceManifestImport>
-      <ServiceManifestRef ServiceManifestName="DroneActorPkg" ServiceManifestVersion="1.0.0" />
-   </ServiceManifestImport>
-   <ServiceManifestImport>
-      <ServiceManifestRef ServiceManifestName="DroneRegistryPkg" ServiceManifestVersion="1.0.0" />
-      <ConfigOverrides />
-   </ServiceManifestImport>
-   <ServiceManifestImport>
-      <ServiceManifestRef ServiceManifestName="DroneWebApiPkg" ServiceManifestVersion="1.0.0" />
-      <ConfigOverrides />
-   </ServiceManifestImport>
-   <DefaultServices>
-      <Service Name="DroneSimulator">
-         <StatelessService ServiceTypeName="DroneSimulatorType" InstanceCount="[DroneSimulator_InstanceCount]">
-            <SingletonPartition />
-         </StatelessService>
-      </Service>
-      <Service Name="DroneManager">
-         <StatelessService ServiceTypeName="DroneManagerType" InstanceCount="[DroneManager_InstanceCount]">
-            <SingletonPartition />
-         </StatelessService>
-      </Service>
-      <Service Name="DroneRegistry">
-         <StatefulService ServiceTypeName="DroneRegistryType" TargetReplicaSetSize="[DroneRegistry_TargetReplicaSetSize]" MinReplicaSetSize="[DroneRegistry_MinReplicaSetSize]">
-            <UniformInt64Partition PartitionCount="[DroneRegistry_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
-         </StatefulService>
-      </Service>
-      <Service Name="DroneWebApi">
-         <StatelessService ServiceTypeName="DroneWebApiType" InstanceCount="[DroneWebApi_InstanceCount]">
-            <SingletonPartition />
-         </StatelessService>
-      </Service>
-      <Service Name="DroneActorService" GeneratedIdRef="e9acdce9-6a59-4875-bac2-ace0afd0ae2b|Persisted">
-         <StatefulService ServiceTypeName="DroneActorServiceType" TargetReplicaSetSize="[DroneActorService_TargetReplicaSetSize]" MinReplicaSetSize="[DroneActorService_MinReplicaSetSize]">
-            <UniformInt64Partition PartitionCount="[DroneActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
-         </StatefulService>
-      </Service>
-   </DefaultServices>
+  <Parameters>
+    <Parameter Name="DroneQueryEngine_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DroneSimulator_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DroneManager_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DroneRegistry_MinReplicaSetSize" DefaultValue="2" />
+    <Parameter Name="DroneRegistry_PartitionCount" DefaultValue="1" />
+    <Parameter Name="DroneRegistry_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="DroneWebApi_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DroneActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="DroneActorService_MinReplicaSetSize" DefaultValue="2" />
+    <Parameter Name="DroneActorService_TargetReplicaSetSize" DefaultValue="3" />
+  </Parameters>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneQueryEnginePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneSimulatorPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneManagerPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneActorPkg" ServiceManifestVersion="1.0.0" />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneRegistryPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneWebApiPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <DefaultServices>
+    <Service Name="DroneQueryEngine">
+      <StatelessService ServiceTypeName="DroneQueryEngineType" InstanceCount="[DroneQueryEngine_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="DroneSimulator">
+      <StatelessService ServiceTypeName="DroneSimulatorType" InstanceCount="[DroneSimulator_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="DroneManager">
+      <StatelessService ServiceTypeName="DroneManagerType" InstanceCount="[DroneManager_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="DroneRegistry">
+      <StatefulService ServiceTypeName="DroneRegistryType" TargetReplicaSetSize="[DroneRegistry_TargetReplicaSetSize]" MinReplicaSetSize="[DroneRegistry_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[DroneRegistry_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
+    </Service>
+    <Service Name="DroneWebApi">
+      <StatelessService ServiceTypeName="DroneWebApiType" InstanceCount="[DroneWebApi_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="DroneActorService" GeneratedIdRef="e9acdce9-6a59-4875-bac2-ace0afd0ae2b|Persisted">
+      <StatefulService ServiceTypeName="DroneActorServiceType" TargetReplicaSetSize="[DroneActorService_TargetReplicaSetSize]" MinReplicaSetSize="[DroneActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[DroneActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
+    </Service>
+  </DefaultServices>
 </ApplicationManifest>

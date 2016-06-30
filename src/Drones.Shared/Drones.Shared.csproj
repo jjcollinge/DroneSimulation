@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\DronePayload.cs" />
+    <Compile Include="Service.Interfaces\IDroneQueryEngine.cs" />
     <Compile Include="Utility\DroneCalculations.cs" />
     <Compile Include="Model\Drone.cs" />
     <Compile Include="Factories\DroneServiceFactory.cs" />

@@ -7,6 +7,7 @@ using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Actors.Client;
 using Drones.Shared;
+using Microsoft.ServiceFabric.Services.Remoting.Client;
 
 namespace DroneActor
 {
@@ -21,7 +22,13 @@ namespace DroneActor
 
         #region private data members
         private delegate DroneState Update(DroneState state);
+        private IDroneQueryEngine _queryEngine;
         #endregion
+
+        public DroneActor()
+        {
+            _queryEngine = DroneServiceFactory.CreateDroneQueryEngine();
+        }
 
         #region control methods
         public async Task MoveUp()
@@ -31,6 +38,7 @@ namespace DroneActor
                 state.Altitude = DroneCalculations.Clamp(state.Altitude + state.Speed,
                                                          state.Altitude + DroneCalculations.MIN_VERTICAL_SPEED,
                                                          state.Altitude + DroneCalculations.MAX_VERTICAL_SPEED);
+                _queryEngine.PublishDroneState(Id.ToString(), state);
                 return state;
             });
         }
@@ -43,6 +51,7 @@ namespace DroneActor
                 state.Altitude = DroneCalculations.Clamp(state.Altitude - state.Speed,
                                                          state.Altitude - DroneCalculations.MIN_VERTICAL_SPEED,
                                                          state.Altitude - DroneCalculations.MAX_VERTICAL_SPEED);
+                _queryEngine.PublishDroneState(Id.ToString(), state);
                 return state;
             });
         }
@@ -54,6 +63,7 @@ namespace DroneActor
                 state.Longitude = DroneCalculations.Clamp(state.Longitude + state.Speed,
                                                           state.Longitude + DroneCalculations.MIN_HORIZONTAL_SPEED,
                                                           state.Longitude + DroneCalculations.MAX_HORIZONTAL_SPEED);
+                _queryEngine.PublishDroneState(Id.ToString(), state);
                 return state;
             });
         }
@@ -65,6 +75,7 @@ namespace DroneActor
                 state.Longitude = DroneCalculations.Clamp(state.Longitude - state.Speed,
                                                           state.Longitude - DroneCalculations.MIN_HORIZONTAL_SPEED,
                                                           state.Longitude - DroneCalculations.MAX_HORIZONTAL_SPEED);
+                _queryEngine.PublishDroneState(Id.ToString(), state);
                 return state;
             });
         }
@@ -76,6 +87,7 @@ namespace DroneActor
                 state.Latitude = DroneCalculations.Clamp(state.Latitude + state.Speed,
                                                          state.Latitude + DroneCalculations.MIN_HORIZONTAL_SPEED,
                                                          state.Latitude + DroneCalculations.MAX_HORIZONTAL_SPEED);
+                ActorEventSource.Current.Message($"Drone Id: {this.Id}, Longitude: {state.Longitude}, Latitude: {state.Latitude}, Altitude: {state.Altitude}, Speed: {state.Speed}");
                 return state;
             });
         }
@@ -87,6 +99,7 @@ namespace DroneActor
                 state.Latitude = DroneCalculations.Clamp(state.Latitude - state.Speed,
                                                          state.Latitude - DroneCalculations.MIN_HORIZONTAL_SPEED,
                                                          state.Latitude - DroneCalculations.MAX_HORIZONTAL_SPEED);
+                _queryEngine.PublishDroneState(Id.ToString(), state);
                 return state;
             });
         }
@@ -202,6 +215,9 @@ namespace DroneActor
             {
                 // Initialise state
                 var state = new DroneState();
+                state.Speed = new Random().Next(DroneCalculations.MIN_HORIZONTAL_SPEED,
+                                                DroneCalculations.MAX_HORIZONTAL_SPEED);
+
                 await this.StateManager.TryAddStateAsync<DroneState>(STATE_IDENTIFIER, state);
                 ActorEventSource.Current.ActorMessage(this, "new actor state initialised.");
             }

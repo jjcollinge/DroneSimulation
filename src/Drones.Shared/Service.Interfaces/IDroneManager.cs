@@ -17,5 +17,6 @@ namespace Drones.Shared
         Task RemoveDroneAsync(string id);
         Task UpdateDroneAsync(string id, DroneState drone);
         Task<string> GenerateDroneIdAsync();
+        Task<Dictionary<string, DroneState>> GetDroneMap();
     }
 }

@@ -91,5 +91,10 @@ namespace DroneManager
                     (context) => this.CreateServiceRemotingListener(context)) };
         }
 
+        public Task<Dictionary<string, DroneState>> GetDroneMap()
+        {
+            var queryEngine = DroneServiceFactory.CreateDroneQueryEngine();
+            return queryEngine.GetDroneMap();
+        }
     }
 }
