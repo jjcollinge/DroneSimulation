@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "Drones", "src\Drones\Drones.sfproj", "{7CD82D4D-8715-4655-9D79-2B6DB3370CF8}"
 EndProject
@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneManager", "src\DroneMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneSimulator", "src\DroneSimulator\DroneSimulator.csproj", "{04BDA53E-2D35-4484-8FF0-96AD28F9052C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneQueryEngine", "DroneQueryEngine\DroneQueryEngine.csproj", "{2A3AEAFF-210B-44C5-9E0F-07CE1D6E0775}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneQueryEngine", "src\DroneQueryEngine\DroneQueryEngine.csproj", "{2A3AEAFF-210B-44C5-9E0F-07CE1D6E0775}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

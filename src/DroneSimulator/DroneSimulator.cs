@@ -15,9 +15,13 @@ namespace DroneSimulator
 {
     internal sealed class DroneSimulator : StatelessService
     {
-        private readonly string DRONE_ENDPOINT = "http://localhost:8680/api/drone";
-        private readonly TimeSpan SIMULATION_RATE = TimeSpan.FromSeconds(2);
-        private readonly int SIMULATION_SIZE = 40;
+        private readonly int SIMULATION_SIZE = 20;
+
+        private readonly TimeSpan SIMULATION_RATE = TimeSpan.FromSeconds(1);
+        private bool THROTTLE_FLAG = false;
+        private bool INITIALISED_FLAG = false;
+
+        private string[] droneIds;
 
         static int seed = Environment.TickCount;
         static readonly ThreadLocal<Random> random =
@@ -36,73 +40,45 @@ namespace DroneSimulator
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
+            // No communications required
             return new ServiceInstanceListener[0];
         }
 
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            // Wait for all the services to startup
-            await Task.Delay(TimeSpan.FromSeconds(15));
+            // Initialise simulation
+            if (!INITIALISED_FLAG)
+            {
+                // Wait for all the services to startup
+                await Task.Delay(TimeSpan.FromSeconds(15));
 
-            // Generate initial simulation data
-            var simulationRegistry = new List<string>();
-            string[] ids = new string[SIMULATION_SIZE];
-            for (int i = 0; i < SIMULATION_SIZE; i++) ids[i] = i.ToString();
-            simulationRegistry.AddRange(ids);
+                // Generate initial simulation data
+                var simulationRegistry = new List<string>();
+                droneIds = new string[SIMULATION_SIZE];
+                for (int i = 0; i < SIMULATION_SIZE; i++) droneIds[i] = i.ToString();
+                simulationRegistry.AddRange(droneIds);
 
-            // Load initial simulation data
-            var droneRegistry = DroneServiceFactory.CreateDroneRegistry();
-            await droneRegistry.LoadExistingRegistry(simulationRegistry);
+                // Load initial simulation data
+                var droneRegistry = DroneServiceFactory.CreateDroneRegistry();
+                await droneRegistry.LoadExistingRegistry(simulationRegistry);
 
-            ServiceEventSource.Current.Message("Simulation loaded");
+                INITIALISED_FLAG = true;
+                ServiceEventSource.Current.Message("Simulation loaded");
+            }
 
             // Simulation loop
             while (!cancellationToken.IsCancellationRequested)
             {
-                Parallel.ForEach<string>(ids, async id =>
+                Parallel.ForEach<string>(droneIds, async id =>
                 {
                     await UpdateDrone(id);
                 });
 
                 // Enforce variable simulation rate
-                await Task.Delay(SIMULATION_RATE, cancellationToken);
+                if(THROTTLE_FLAG)
+                    await Task.Delay(SIMULATION_RATE, cancellationToken);
             }
         }
-
-        //private async Task UpdateDrone(string id)
-        //{
-        //    var payload = new
-        //    {
-        //        Id = id,
-        //        State = new
-        //        {
-        //            Longitude = (Decimal)random.Value.NextDouble(),
-        //            Latitude = (Decimal)random.Value.NextDouble(),
-        //            Altitude = random.Value.Next(),
-        //            Heading = random.Value.Next(),
-        //            Speed = random.Value.Next()
-        //        }
-        //    };
-
-        //    var jsonPayload = JsonConvert.SerializeObject(payload);
-        //    var content = new StringContent(jsonPayload);
-        //    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        //    content.Headers.ContentLength = jsonPayload.Length;
-
-        //    using (var http = new HttpClient())
-        //    {
-        //        var response = await http.PutAsync(DRONE_ENDPOINT, content);
-
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            ServiceEventSource.Current.Message($"Successful update to drone {id}");
-        //        }
-        //        else
-        //        {
-        //            ServiceEventSource.Current.Message($"Failed to update to drone {id}");
-        //        }
-        //    }
-        //}
 
         private async Task UpdateDrone(string id)
         {

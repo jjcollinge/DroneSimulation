@@ -21,9 +21,9 @@ namespace DroneManager
         public async Task AddDroneAsync(string id, DroneState droneModel)
         {
             var drone = DroneServiceFactory.CreateDrone(id);
-            var task0 = RegisterDroneId(id);
-            var task1 = drone.SetState(droneModel);
-            await Task.WhenAll(task0, task1);
+            var registerTask = RegisterDroneId(id);
+            var SetStateTask = drone.SetState(droneModel);
+            await Task.WhenAll(registerTask, SetStateTask);
         }
 
         public async Task<DronePayload> GetDroneAsync(string id)

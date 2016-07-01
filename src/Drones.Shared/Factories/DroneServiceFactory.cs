@@ -15,7 +15,7 @@ namespace Drones.Shared
     {
         private static string DRONE_MANAGEMENT_URI = "fabric:/Drones/DroneManager";
         private static string DRONE_REGISTRY_URI = "fabric:/Drones/DroneRegistry";
-        private static string DRONE_QUERY_ENGINE = "fabric:/Drones/DroneQueryEngine";
+        private static string DRONE_QUERY_ENGINE_URI = "fabric:/Drones/DroneQueryEngine";
 
         public static IDroneManager CreateDroneManager()
         {
@@ -41,7 +41,7 @@ namespace Drones.Shared
 
         public static IDroneQueryEngine CreateDroneQueryEngine()
         {
-            return ServiceProxy.Create<IDroneQueryEngine>(new Uri(DRONE_QUERY_ENGINE));
+            return ServiceProxy.Create<IDroneQueryEngine>(new Uri(DRONE_QUERY_ENGINE_URI));
         }
 
         public static IDroneActor CreateDrone(string id)
