@@ -17,14 +17,32 @@ namespace Drones.Shared
         private static string DRONE_REGISTRY_URI = "fabric:/Drones/DroneRegistry";
         private static string DRONE_QUERY_ENGINE_URI = "fabric:/Drones/DroneQueryEngine";
 
+        private static IDroneManager _droneManager;
+        private static IDroneRegistry _droneRegistry;
+        private static IDroneQueryEngine _droneQueryEngine;
+
+        public DroneServiceFactory()
+        { }
+
         public static IDroneManager CreateDroneManager()
         {
-            return ServiceProxy.Create<IDroneManager>(new Uri(DRONE_MANAGEMENT_URI));
+            if(_droneManager == null)
+                _droneManager = ServiceProxy.Create<IDroneManager>(new Uri(DRONE_MANAGEMENT_URI));
+            return _droneManager;
         }
 
         public static IDroneRegistry CreateDroneRegistry()
         {
-            return ServiceProxy.Create<IDroneRegistry>(new Uri(DRONE_REGISTRY_URI), new ServicePartitionKey(0));
+            if(_droneRegistry == null)
+                _droneRegistry = ServiceProxy.Create<IDroneRegistry>(new Uri(DRONE_REGISTRY_URI), new ServicePartitionKey(0));
+            return _droneRegistry;
+        }
+
+        public static IDroneQueryEngine CreateDroneQueryEngine()
+        {
+            if(_droneQueryEngine == null)
+                _droneQueryEngine = ServiceProxy.Create<IDroneQueryEngine>(new Uri(DRONE_QUERY_ENGINE_URI));
+            return _droneQueryEngine;
         }
 
         public async static Task<IDroneActor> GetDroneAsync(string id)
@@ -37,11 +55,6 @@ namespace Drones.Shared
                 drone = ActorProxy.Create<IDroneActor>(new ActorId(id));
 
             return drone;
-        }
-
-        public static IDroneQueryEngine CreateDroneQueryEngine()
-        {
-            return ServiceProxy.Create<IDroneQueryEngine>(new Uri(DRONE_QUERY_ENGINE_URI));
         }
 
         public static IDroneActor CreateDrone(string id)

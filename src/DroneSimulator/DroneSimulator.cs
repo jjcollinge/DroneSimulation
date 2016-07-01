@@ -78,6 +78,7 @@ namespace DroneSimulator
                 if(THROTTLE_FLAG)
                     await Task.Delay(SIMULATION_RATE, cancellationToken);
             }
+            ServiceEventSource.Current.Message("Simulation loop exited");
         }
 
         private async Task UpdateDrone(string id)
