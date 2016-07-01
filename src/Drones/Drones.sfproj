@@ -32,7 +32,6 @@
     <ProjectReference Include="..\DroneWebApi\DroneWebApi.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DroneWebApp.xproj" />
     <Content Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

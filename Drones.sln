@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneSimulator", "src\Drone
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneQueryEngine", "src\DroneQueryEngine\DroneQueryEngine.csproj", "{2A3AEAFF-210B-44C5-9E0F-07CE1D6E0775}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DroneWebApp", "src\DroneWebApp\DroneWebApp.xproj", "{58EA1B30-A01C-49C1-B0D4-80186DF3ABB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,14 @@ Global
 		{2A3AEAFF-210B-44C5-9E0F-07CE1D6E0775}.Release|Any CPU.ActiveCfg = Release|x64
 		{2A3AEAFF-210B-44C5-9E0F-07CE1D6E0775}.Release|x64.ActiveCfg = Release|x64
 		{2A3AEAFF-210B-44C5-9E0F-07CE1D6E0775}.Release|x64.Build.0 = Release|x64
+		{58EA1B30-A01C-49C1-B0D4-80186DF3ABB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58EA1B30-A01C-49C1-B0D4-80186DF3ABB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58EA1B30-A01C-49C1-B0D4-80186DF3ABB9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{58EA1B30-A01C-49C1-B0D4-80186DF3ABB9}.Debug|x64.Build.0 = Debug|Any CPU
+		{58EA1B30-A01C-49C1-B0D4-80186DF3ABB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58EA1B30-A01C-49C1-B0D4-80186DF3ABB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58EA1B30-A01C-49C1-B0D4-80186DF3ABB9}.Release|x64.ActiveCfg = Release|Any CPU
+		{58EA1B30-A01C-49C1-B0D4-80186DF3ABB9}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
