@@ -8,8 +8,16 @@
     xmlHttp.send(null);
 }
 
-var drones = httpGetAsync("http://localhost:8680/api/drone", function (drones) {
-    console.log(drones);
+var drones = httpGetAsync("http://localhost:8680/api/drone", function (dronesAsJsonString) {
+    console.log(dronesAsJsonString);
+
+    var drones = JSON.parse(dronesAsJsonString);
+    for(var i = 0; i < drones.length; i++)
+    {
+        console.log("Id: " + drones[i].Id);
+        console.log("Drones: " + drones[i].State);
+    }
+
 });
 
-setTimeout(window.location.reload(), 2000);
+setTimeout(window.location.reload(), 1000);
