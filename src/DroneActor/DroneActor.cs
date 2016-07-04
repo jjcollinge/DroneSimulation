@@ -8,20 +8,26 @@ using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Actors.Client;
 using Drones.Shared;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
+using System.Runtime.Serialization;
 
 namespace DroneActor
 {
-    [StatePersistence(StatePersistence.Persisted)]
+    [StatePersistence(StatePersistence.Persisted), DataContract]
     internal sealed class DroneActor : Actor, IDroneActor
     {
         #region constants
+        [IgnoreDataMember]
         private const string STATE_IDENTIFIER = "DRONESTATE";
+        [IgnoreDataMember]
         private const int MAX_HEADING = 359;
+        [IgnoreDataMember]
         private const int MIN_HEADING = 0;
         #endregion
 
         #region private data members
+        [field: NonSerialized]
         private delegate DroneState Update(DroneState state);
+        [IgnoreDataMember]
         private IDroneQueryEngine _queryEngine;
         #endregion
 
@@ -87,7 +93,7 @@ namespace DroneActor
                 state.Latitude = DroneCalculations.Clamp(state.Latitude + state.Speed,
                                                          state.Latitude + DroneCalculations.MIN_HORIZONTAL_SPEED,
                                                          state.Latitude + DroneCalculations.MAX_HORIZONTAL_SPEED);
-                ActorEventSource.Current.Message($"Drone Id: {this.Id}, Longitude: {state.Longitude}, Latitude: {state.Latitude}, Altitude: {state.Altitude}, Speed: {state.Speed}");
+                _queryEngine.PublishDroneState(Id.ToString(), state);
                 return state;
             });
         }
@@ -112,6 +118,7 @@ namespace DroneActor
                 state.Heading = DroneCalculations.Clamp(state.Heading + state.Speed,
                                                         state.Heading + DroneCalculations.MAX_ROTATION_SPEED,
                                                         state.Heading + DroneCalculations.MIN_ROTATION_SPEED);
+                _queryEngine.PublishDroneState(Id.ToString(), state);
                 return state;
             });
         }
@@ -124,6 +131,7 @@ namespace DroneActor
                 state.Heading = DroneCalculations.Clamp(state.Heading - state.Speed,
                                                         state.Heading - DroneCalculations.MAX_ROTATION_SPEED,
                                                         state.Heading - DroneCalculations.MIN_ROTATION_SPEED);
+                _queryEngine.PublishDroneState(Id.ToString(), state);
                 return state;
             });
         }

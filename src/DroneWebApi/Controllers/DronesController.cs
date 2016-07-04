@@ -19,10 +19,10 @@ namespace DroneWebApi.Controllers
         }
 
         // GET api/drone 
-        public async Task<Dictionary<string, DroneState>> GetAsync()
+        public async Task<ConcurrentBag<DronePayload>> GetAsync()
         {
             ServiceEventSource.Current.Message($"{SERVICE_PREFIX}: GetAsync called with no parameters");
-            var drones = await _droneManager.GetDroneMap();
+            var drones = await _droneManager.GetCachedDronesAsync();
             return drones;
         }
 

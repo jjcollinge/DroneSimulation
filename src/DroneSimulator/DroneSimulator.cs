@@ -66,6 +66,8 @@ namespace DroneSimulator
                 ServiceEventSource.Current.Message("Simulation loaded");
             }
 
+            int loopCounter = 0;
+
             // Simulation loop
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -74,8 +76,10 @@ namespace DroneSimulator
                     await UpdateDrone(id);
                 });
 
+                ServiceEventSource.Current.Message($"Simulation loop: {++loopCounter}");
+
                 // Enforce variable simulation rate
-                if(THROTTLE_FLAG)
+                if (THROTTLE_FLAG)
                     await Task.Delay(SIMULATION_RATE, cancellationToken);
             }
             ServiceEventSource.Current.Message("Simulation loop exited");

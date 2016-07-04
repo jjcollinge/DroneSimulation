@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="DronesType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="DroneWebApp_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DroneQueryEngine_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DroneSimulator_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DroneManager_InstanceCount" DefaultValue="-1" />
@@ -12,6 +13,10 @@
     <Parameter Name="DroneActorService_MinReplicaSetSize" DefaultValue="2" />
     <Parameter Name="DroneActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneWebAppPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="DroneQueryEnginePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
@@ -36,6 +41,11 @@
     <ConfigOverrides />
   </ServiceManifestImport>
   <DefaultServices>
+    <Service Name="DroneWebApp">
+      <StatelessService ServiceTypeName="DroneWebAppType" InstanceCount="[DroneWebApp_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
     <Service Name="DroneQueryEngine">
       <StatelessService ServiceTypeName="DroneQueryEngineType" InstanceCount="[DroneQueryEngine_InstanceCount]">
         <SingletonPartition />

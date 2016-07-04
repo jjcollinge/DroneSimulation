@@ -16,6 +16,7 @@ namespace Drones.Shared
         private static string DRONE_MANAGEMENT_URI = "fabric:/Drones/DroneManager";
         private static string DRONE_REGISTRY_URI = "fabric:/Drones/DroneRegistry";
         private static string DRONE_QUERY_ENGINE_URI = "fabric:/Drones/DroneQueryEngine";
+        private static string DRONE_SERVICE_URI = "fabric:/Drones/Drone";
 
         private static IDroneManager _droneManager;
         private static IDroneRegistry _droneRegistry;
@@ -23,6 +24,12 @@ namespace Drones.Shared
 
         public DroneServiceFactory()
         { }
+
+        public static IActorService CreateDroneServiceProxy()
+        {
+            var droneActorService = ActorServiceProxy.Create(new Uri(DRONE_SERVICE_URI), 0);
+            return droneActorService;
+        }
 
         public static IDroneManager CreateDroneManager()
         {
@@ -57,16 +64,22 @@ namespace Drones.Shared
             return drone;
         }
 
+        public async static Task<IDroneActor> GetDroneAsync(ActorId id)
+        {
+            var droneRegistry = CreateDroneRegistry();
+            var droneExists = await droneRegistry.ContainsDroneIdAsync(id.GetStringId());
+
+            IDroneActor drone = null;
+            if (droneExists)
+                drone = ActorProxy.Create<IDroneActor>(id);
+
+            return drone;
+        }
+
         public static IDroneActor CreateDrone(string id)
         {
             var actor = ActorProxy.Create<IDroneActor>(new ActorId(id));
             return actor;
-        }
-
-        public static Task DeleteDroneAsync(string id)
-        {
-            //var droneToDelate = CreateDrone(id);
-            return Task.FromResult(true);
         }
     }
 }

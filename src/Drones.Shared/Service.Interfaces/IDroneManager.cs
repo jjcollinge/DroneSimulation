@@ -11,12 +11,12 @@ namespace Drones.Shared
 {
     public interface IDroneManager : IService
     {
-        Task<List<DronePayload>> GetDronesAsync();
+        Task<ConcurrentBag<DronePayload>> GetDronesAsync();
         Task<DronePayload> GetDroneAsync(string id);
         Task AddDroneAsync(string id, DroneState drone);
         Task RemoveDroneAsync(string id);
         Task UpdateDroneAsync(string id, DroneState drone);
         Task<string> GenerateDroneIdAsync();
-        Task<Dictionary<string, DroneState>> GetDroneMap();
+        Task<ConcurrentBag<DronePayload>> GetCachedDronesAsync();
     }
 }

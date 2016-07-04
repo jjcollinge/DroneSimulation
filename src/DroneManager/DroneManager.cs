@@ -9,6 +9,9 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using Drones.Shared;
 using System.Collections.Concurrent;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
+using Microsoft.ServiceFabric.Actors.Client;
+using Microsoft.ServiceFabric.Actors.Query;
+using Microsoft.ServiceFabric.Actors;
 
 namespace DroneManager
 {
@@ -36,31 +39,41 @@ namespace DroneManager
             };
         }
 
-        public async Task<List<DronePayload>> GetDronesAsync()
+        public async Task<ConcurrentBag<DronePayload>> GetDronesAsync()
         {
-            var droneRegistry = DroneServiceFactory.CreateDroneRegistry();
-            var droneIds = await droneRegistry.GetDronesAsync();
-
-            List<DronePayload> drones = new List<DronePayload>();
-
-            for (int i = 1; i < droneIds.Count + 1; i++)
+            var droneServiceProxy = DroneServiceFactory.CreateDroneServiceProxy();
+            ContinuationToken continuationToken = null;
+            CancellationToken cancellationToken = new CancellationToken();
+            PagedResult<ActorInformation> droneIds = null;
+            do
             {
-                var drone = await DroneServiceFactory.GetDroneAsync(droneIds[(i - 1)].ToString());
-                drones.Add(new DronePayload
+                droneIds = await droneServiceProxy.GetActorsAsync(continuationToken, cancellationToken);
+                continuationToken = droneIds.ContinuationToken;
+            }
+            while (continuationToken != null);
+
+            var droneBag = new ConcurrentBag<DronePayload>();
+            Parallel.ForEach<ActorInformation>(droneIds.Items, async (droneId) =>
+            {
+                var drone = ActorProxy.Create<IDroneActor>(droneId.ActorId);
+                droneBag.Add(new DronePayload
                 {
                     Id = await drone.GetIdAsync(),
                     State = await drone.GetState()
                 });
-            }
+            });
 
-            return drones;
+            return droneBag;
         }
 
         public async Task RemoveDroneAsync(string id)
         {
             var droneRegistry = DroneServiceFactory.CreateDroneRegistry();
             await droneRegistry.RemoveDroneAsync(id);
-            await DroneServiceFactory.DeleteDroneAsync(id);
+
+            var droneServiceProxy = DroneServiceFactory.CreateDroneServiceProxy();
+            CancellationToken cancellationToken = new CancellationToken();
+            await droneServiceProxy.DeleteActorAsync(new ActorId(id), cancellationToken);
         }
 
         public async Task UpdateDroneAsync(string id, DroneState updatedState)
@@ -91,10 +104,22 @@ namespace DroneManager
                     (context) => this.CreateServiceRemotingListener(context)) };
         }
 
-        public Task<Dictionary<string, DroneState>> GetDroneMap()
+        public async Task<ConcurrentBag<DronePayload>> GetCachedDronesAsync()
         {
             var queryEngine = DroneServiceFactory.CreateDroneQueryEngine();
-            return queryEngine.GetDroneMap();
+            var droneMap = await queryEngine.GetDroneMap();
+
+            var droneBag = new ConcurrentBag<DronePayload>();
+            Parallel.ForEach<KeyValuePair<string, DroneState>>(droneMap, (droneKVP) =>
+             {
+                 droneBag.Add(new DronePayload
+                 {
+                     Id = droneKVP.Key,
+                     State = droneKVP.Value
+                 });
+             });
+
+            return droneBag;
         }
     }
 }
