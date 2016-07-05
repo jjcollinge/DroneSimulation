@@ -119,6 +119,8 @@ namespace DroneManager
                  });
              });
 
+            ServiceEventSource.Current.Message("[DroneManager]: DroneBag = " + droneBag);
+
             return droneBag;
         }
     }
