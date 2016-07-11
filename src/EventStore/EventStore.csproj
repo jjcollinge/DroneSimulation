@@ -85,7 +85,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Drones.Shared\Drones.Shared.csproj">
+    <ProjectReference Include="..\Drones.Shared\Drones.Shared.csproj">
       <Project>{7B77119A-AA55-4913-93C3-53C29B83E91F}</Project>
       <Name>Drones.Shared</Name>
     </ProjectReference>
