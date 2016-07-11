@@ -24,13 +24,12 @@
     <None Include="Scripts\Deploy-FabricApplication.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DroneWebApp\DroneWebApp.xproj" />
-    <ProjectReference Include="..\DroneQueryEngine\DroneQueryEngine.csproj" />
+    <ProjectReference Include="..\..\EventStore\EventStore.csproj" />
     <ProjectReference Include="..\DroneActor\DroneActor.csproj" />
-    <ProjectReference Include="..\DroneManager\DroneManager.csproj" />
-    <ProjectReference Include="..\DroneRegistry\DroneRegistry.csproj" />
     <ProjectReference Include="..\DroneSimulator\DroneSimulator.csproj" />
     <ProjectReference Include="..\DroneWebApi\DroneWebApi.csproj" />
+    <ProjectReference Include="..\DroneWebApp\DroneWebApp.xproj" />
+    <ProjectReference Include="..\SwarmActor\SwarmActor.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

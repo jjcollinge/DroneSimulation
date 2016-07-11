@@ -1,38 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Fabric;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
-using System.Net.Http;
-using Newtonsoft.Json;
 using Drones.Shared;
-using System.Net.Http.Headers;
+using Drones.Shared.Events;
+using Microsoft.ServiceFabric.Actors.Client;
+using Microsoft.ServiceFabric.Actors;
+using Drones.Shared.Actors;
+using Drones.Shared.Model;
 
 namespace DroneSimulator
 {
-    internal sealed class DroneSimulator : StatelessService
+    internal sealed class DroneSimulator : StatelessService, ISwarmEvents
     {
-        private readonly int SIMULATION_SIZE = 20;
+        enum STATUS
+        {
+            UNINITIALISED,
+            INITIALISED
+        }
 
-        private readonly TimeSpan SIMULATION_RATE = TimeSpan.FromSeconds(1);
-        private bool THROTTLE_FLAG = false;
-        private bool INITIALISED_FLAG = false;
-
-        private string[] droneIds;
+        private STATUS _status;
+        private List<String> _cachedDroneIds;
+        private ISwarmActor _swarm;
 
         static int seed = Environment.TickCount;
         static readonly ThreadLocal<Random> random =
         new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
-
-        private enum DIRECTION {
-            FORWARD,
-            BACKWARD,
-            RIGHT,
-            LEFT
-        }
 
         public DroneSimulator(StatelessServiceContext context)
             : base(context)
@@ -46,69 +42,70 @@ namespace DroneSimulator
 
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            // Initialise simulation
-            if (!INITIALISED_FLAG)
+            if(_status == STATUS.UNINITIALISED)
             {
-                // Wait for all the services to startup
-                await Task.Delay(TimeSpan.FromSeconds(15));
+                Thread.Sleep(TimeSpan.FromSeconds(30));
 
-                // Generate initial simulation data
-                var simulationRegistry = new List<string>();
-                droneIds = new string[SIMULATION_SIZE];
-                for (int i = 0; i < SIMULATION_SIZE; i++) droneIds[i] = i.ToString();
-                simulationRegistry.AddRange(droneIds);
+                // Create a new swarm & subscribe to events
+                var swarmId = ActorId.CreateRandom();
+                _swarm = ActorProxy.Create<ISwarmActor>(swarmId);
+                await _swarm.SubscribeAsync<ISwarmEvents>(this);
 
-                // Load initial simulation data
-                var droneRegistry = DroneServiceFactory.CreateDroneRegistry();
-                await droneRegistry.LoadExistingRegistry(simulationRegistry);
+                // Create event store and register swarm with it
+                var eventStore = DroneServiceFactory.CreateDroneEventStoreProxy();
+                await eventStore.RegisterSwarmAsync(swarmId);
 
-                INITIALISED_FLAG = true;
-                ServiceEventSource.Current.Message("Simulation loaded");
+                for (int i = 0; i < 100; i++)
+                {
+                    // Add 'n' random guids to swarm
+                    var droneId = ActorId.CreateRandom().ToString();
+                    await _swarm.AddDroneAsync(droneId);
+                }
+
+                _status = STATUS.INITIALISED;
             }
 
-            int loopCounter = 0;
+            long iteration = 0;
 
             // Simulation loop
             while (!cancellationToken.IsCancellationRequested)
             {
-                Parallel.ForEach<string>(droneIds, async id =>
+                Parallel.ForEach<String>(_cachedDroneIds, id =>
                 {
-                    await UpdateDrone(id);
+                    var drone = ActorProxy.Create<IDroneActor>(new ActorId(id));
+                    var force = random.Value.Next(-10, 10);
+                    var yaw = random.Value.NextDouble() * (((Math.PI / 180) * 359) - 0) + 0;
+                    var pitch = random.Value.NextDouble() * (((Math.PI / 180) * 359) - 0) + 0;
+                    var roll = random.Value.NextDouble() * (((Math.PI / 180) * 359) - 0) + 0;
+
+                    drone.MoveAsync(new DroneTransform
+                    {
+                        Force = force,
+                        Orientation = new Orientation
+                        {
+                            Yaw = yaw,
+                            Pitch = pitch,
+                            Roll = roll
+                        },
+                    });
                 });
 
-                ServiceEventSource.Current.Message($"Simulation loop: {++loopCounter}");
+                ServiceEventSource.Current.ServiceMessage(this, $"Simulation loop iteration: {iteration++}");
 
-                // Enforce variable simulation rate
-                if (THROTTLE_FLAG)
-                    await Task.Delay(SIMULATION_RATE, cancellationToken);
+                // Delay simulation loop
+                await Task.Delay(TimeSpan.FromSeconds(1));
             }
-            ServiceEventSource.Current.Message("Simulation loop exited");
+            ServiceEventSource.Current.ServiceMessage(this, $"Simulation loop ended at: {iteration}");
         }
 
-        private async Task UpdateDrone(string id)
+        public void DroneAdded(String swarmId, String droneId)
         {
-            var directionToMove = random.Value.Next(0, 3);
-            var drone = DroneServiceFactory.CreateDrone(id);
+            _cachedDroneIds.Add(droneId);
+        }
 
-            switch ((DIRECTION)directionToMove)
-            {
-                case DIRECTION.FORWARD:
-                    await drone.MoveForward();
-                    break;
-                case DIRECTION.BACKWARD:
-                    await drone.MoveBackwards();
-                    break;
-                case DIRECTION.LEFT:
-                    await drone.MoveLeft();
-                    break;
-                case DIRECTION.RIGHT:
-                    await drone.MoveRight();
-                    break;
-                default:
-                    await drone.MoveForward();
-                    break;
-            }
-
+        public void DroneRemoved(String swarmId, String droneId)
+        {
+            _cachedDroneIds.Remove(droneId);
         }
     }
 }

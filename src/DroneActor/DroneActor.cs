@@ -1,259 +1,70 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
-using Microsoft.ServiceFabric.Actors.Client;
-using Drones.Shared;
-using Microsoft.ServiceFabric.Services.Remoting.Client;
 using System.Runtime.Serialization;
+using Drones.Shared.Model;
+using Drones.Shared.Actors;
 
 namespace DroneActor
 {
     [StatePersistence(StatePersistence.Persisted), DataContract]
     internal sealed class DroneActor : Actor, IDroneActor
     {
-        #region constants
-        [IgnoreDataMember]
-        private const string STATE_IDENTIFIER = "DRONESTATE";
-        [IgnoreDataMember]
-        private const int MAX_HEADING = 359;
-        [IgnoreDataMember]
-        private const int MIN_HEADING = 0;
-        #endregion
-
-        #region private data members
-        [field: NonSerialized]
-        private delegate DroneState Update(DroneState state);
-        [IgnoreDataMember]
-        private IDroneQueryEngine _queryEngine;
-        #endregion
+        [DataMember]
+        private Drone _state;
 
         public DroneActor()
-        {
-            _queryEngine = DroneServiceFactory.CreateDroneQueryEngine();
-        }
+        { }
 
-        #region control methods
-        public async Task MoveUp()
+        protected override Task OnActivateAsync()
         {
-            await UpdateState(state =>
+            if (_state == null)
             {
-                state.Altitude = DroneCalculations.Clamp(state.Altitude + state.Speed,
-                                                         state.Altitude + DroneCalculations.MIN_VERTICAL_SPEED,
-                                                         state.Altitude + DroneCalculations.MAX_VERTICAL_SPEED);
-                _queryEngine.PublishDroneState(Id.ToString(), state);
-                return state;
-            });
-        }
-
-        public async Task MoveDown()
-        {
-            //TODO: Keep above 0
-            await UpdateState(state =>
-            {
-                state.Altitude = DroneCalculations.Clamp(state.Altitude - state.Speed,
-                                                         state.Altitude - DroneCalculations.MIN_VERTICAL_SPEED,
-                                                         state.Altitude - DroneCalculations.MAX_VERTICAL_SPEED);
-                _queryEngine.PublishDroneState(Id.ToString(), state);
-                return state;
-            });
-        }
-
-        public async Task MoveRight()
-        {
-            await UpdateState(state =>
-            {
-                state.Longitude = DroneCalculations.Clamp(state.Longitude + state.Speed,
-                                                          state.Longitude + DroneCalculations.MIN_HORIZONTAL_SPEED,
-                                                          state.Longitude + DroneCalculations.MAX_HORIZONTAL_SPEED);
-                _queryEngine.PublishDroneState(Id.ToString(), state);
-                return state;
-            });
-        }
-
-        public async Task MoveLeft()
-        {
-            await UpdateState(state =>
-            {
-                state.Longitude = DroneCalculations.Clamp(state.Longitude - state.Speed,
-                                                          state.Longitude - DroneCalculations.MIN_HORIZONTAL_SPEED,
-                                                          state.Longitude - DroneCalculations.MAX_HORIZONTAL_SPEED);
-                _queryEngine.PublishDroneState(Id.ToString(), state);
-                return state;
-            });
-        }
-
-        public async Task MoveForward()
-        {
-            await UpdateState(state =>
-            {
-                state.Latitude = DroneCalculations.Clamp(state.Latitude + state.Speed,
-                                                         state.Latitude + DroneCalculations.MIN_HORIZONTAL_SPEED,
-                                                         state.Latitude + DroneCalculations.MAX_HORIZONTAL_SPEED);
-                _queryEngine.PublishDroneState(Id.ToString(), state);
-                return state;
-            });
-        }
-
-        public async Task MoveBackwards()
-        {
-            await UpdateState(state =>
-            {
-                state.Latitude = DroneCalculations.Clamp(state.Latitude - state.Speed,
-                                                         state.Latitude - DroneCalculations.MIN_HORIZONTAL_SPEED,
-                                                         state.Latitude - DroneCalculations.MAX_HORIZONTAL_SPEED);
-                _queryEngine.PublishDroneState(Id.ToString(), state);
-                return state;
-            });
-        }
-
-        public async Task RotateClockwise(int degrees)
-        {
-            //TODO: Keep within 360*
-            await UpdateState(state =>
-            {
-                state.Heading = DroneCalculations.Clamp(state.Heading + state.Speed,
-                                                        state.Heading + DroneCalculations.MAX_ROTATION_SPEED,
-                                                        state.Heading + DroneCalculations.MIN_ROTATION_SPEED);
-                _queryEngine.PublishDroneState(Id.ToString(), state);
-                return state;
-            });
-        }
-
-        public async Task RotateAntiClockwise(int degrees)
-        {
-            //TODO: Keep within 360*
-            await UpdateState(state =>
-            {
-                state.Heading = DroneCalculations.Clamp(state.Heading - state.Speed,
-                                                        state.Heading - DroneCalculations.MAX_ROTATION_SPEED,
-                                                        state.Heading - DroneCalculations.MIN_ROTATION_SPEED);
-                _queryEngine.PublishDroneState(Id.ToString(), state);
-                return state;
-            });
-        }
-        #endregion
-
-        #region getters and setters
-        public Task<string> GetIdAsync()
-        {
-            return Task.FromResult(this.GetActorId().ToString());
-        }
-
-        public async Task SetState(DroneState model)
-        {
-            await this.StateManager.SetStateAsync(STATE_IDENTIFIER, model);
-        }
-
-        public async Task SetAltitude(int alt)
-        {
-            await UpdateState(state =>
-            {
-                state.Altitude = alt;
-                return state;
-            });
-        }
-
-        public async Task SetCoordinates(double lon, double lat)
-        {
-            await UpdateState(state =>
-            {
-                state.Longitude = lon;
-                state.Latitude = lat;
-                return state;
-            });
-        }
-
-        public async Task SetHeading(int heading)
-        {
-            var clampedHeading = DroneCalculations.Clamp(heading, MIN_HEADING, MAX_HEADING);
-            await UpdateState(state =>
-            {
-                state.Heading = clampedHeading;
-                return state;
-            });
-        }
-
-        public async Task SetSpeed(int speed)
-        {
-            await UpdateState(state =>
-            {
-                state.Speed = speed;
-                return state;
-            });
-        }
-
-        public async Task<Tuple<double, double>> GetCoordinates()
-        {
-            var state = await GetState();
-            return new Tuple<double, double>(state.Longitude, state.Latitude);
-        }
-
-        public async Task<int> GetAltitude()
-        {
-            var state = await GetState();
-            return state.Altitude;
-        }
-
-        public async Task<int> GetHeading()
-        {
-            var state = await GetState();
-            return state.Heading;
-        }
-
-        public async Task<int> GetSpeed()
-        {
-            var state = await GetState();
-            return state.Speed;
-        }
-
-        public async Task<DroneState> GetState()
-        {
-            return await this.StateManager.GetStateAsync<DroneState>(STATE_IDENTIFIER);
-        }
-        #endregion
-
-        #region activation methods
-        protected async override Task OnActivateAsync()
-        {
-            if (!(await this.StateManager.ContainsStateAsync(STATE_IDENTIFIER)))
-            {
-                // Initialise state
-                var state = new DroneState();
-                state.Speed = new Random().Next(DroneCalculations.MIN_HORIZONTAL_SPEED,
-                                                DroneCalculations.MAX_HORIZONTAL_SPEED);
-
-                await this.StateManager.TryAddStateAsync<DroneState>(STATE_IDENTIFIER, state);
-                ActorEventSource.Current.ActorMessage(this, "new actor state initialised.");
+                _state = new Drone();
             }
-
-            ActorEventSource.Current.ActorMessage(this, "Actor activated.");
-
-            // The StateManager is this actor's private state store.
-            // Data stored in the StateManager will be replicated for high-availability for actors that use volatile or persisted state storage.
-            // Any serializable object can be saved in the StateManager.
-            // For more information, see http://aka.ms/servicefabricactorsstateserialization
-
-            return;
+            return base.OnActivateAsync();
         }
-        #endregion
 
-        #region private methods
-        private async Task UpdateState(Update update)
+        public Task MoveAsync(DroneTransform transform)
         {
-            DroneState state;
-            var condition = await this.StateManager.TryGetStateAsync<DroneState>(STATE_IDENTIFIER);
-            if (condition.HasValue)
-            {
-                state = condition.Value;
-                state = update(state);
-                await this.StateManager.SetStateAsync<DroneState>(STATE_IDENTIFIER, state);
-            }
+            UpdatePosition(transform.Force, transform.Orientation.Yaw, transform.Orientation.Pitch, transform.Orientation.Roll);
+            UpdateOrientation(transform.Orientation.Yaw, transform.Orientation.Pitch, transform.Orientation.Roll);
+            return Task.FromResult(true);
         }
-        #endregion
 
+        private void UpdateOrientation(double yaw, double pitch, double roll)
+        {
+            _state.Orientation = new Orientation
+            {
+                Yaw = yaw,
+                Pitch = pitch,
+                Roll = roll
+            };
+        }
+
+        private void UpdatePosition(double force, double yaw, double pitch, double roll)
+        {
+            // Convert Yaw, Pitch and Roll into Quaternion angles.
+            double c1 = Math.Cos(yaw / 2.0);
+            double s1 = Math.Sin(yaw / 2.0);
+            double c2 = Math.Cos(pitch / 2.0);
+            double s2 = Math.Sin(pitch / 2.0);
+            double c3 = Math.Cos(roll / 2.0);
+            double s3 = Math.Sin(roll / 2.0);
+            double c1c2 = c1 * c2;
+            double s1s2 = s1 * s2;
+            var w = c1c2 * c3 - s1s2 * s3;
+            var x = c1c2 * s3 + s1s2 * c3;
+            var y = (s1 * c2 * c3) + (c1 * s2 * s3);
+            var z = (c1 * s2 * c3) - (s1 * c2 * s3);
+            // Build a transformation vector (w, x, y, z)
+            var v1 = (2 * x * z) - (2 * y * w);
+            var v2 = (2 * y * z) + (2 * x * w);
+            var v3 = (1 - 2 * (x * x)) - (2 * (y * y));
+            // Apply the transformation vector to the existing state and save in new state
+            _state.Position.X += force * v1;
+            _state.Position.Y += force * v2;
+            _state.Position.Z += force * v3;
+        }
     }
 }
