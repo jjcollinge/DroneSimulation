@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="DronesType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Parameters>
+    <Parameter Name="EventStore_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="EventStore_PartitionCount" DefaultValue="1" />
+    <Parameter Name="EventStore_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="DroneWebApp_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DroneSimulator_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DroneWebApi_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DroneActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="DroneActorService_MinReplicaSetSize" DefaultValue="2" />
+    <Parameter Name="DroneActorService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="SwarmActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="SwarmActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="SwarmActorService_TargetReplicaSetSize" DefaultValue="3" />
+  </Parameters>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="EventStorePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SwarmActorPkg" ServiceManifestVersion="1.0.0" />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneWebAppPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneSimulatorPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneActorPkg" ServiceManifestVersion="1.0.0" />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="DroneWebApiPkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <DefaultServices>
+    <Service Name="EventStore">
+      <StatefulService ServiceTypeName="EventStoreType" TargetReplicaSetSize="[EventStore_TargetReplicaSetSize]" MinReplicaSetSize="[EventStore_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[EventStore_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
+    </Service>
+    <Service Name="DroneWebApp">
+      <StatelessService ServiceTypeName="DroneWebAppType" InstanceCount="[DroneWebApp_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="DroneSimulator">
+      <StatelessService ServiceTypeName="DroneSimulatorType" InstanceCount="[DroneSimulator_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="DroneWebApi">
+      <StatelessService ServiceTypeName="DroneWebApiType" InstanceCount="[DroneWebApi_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="DroneActorService" GeneratedIdRef="e9acdce9-6a59-4875-bac2-ace0afd0ae2b|Persisted">
+      <StatefulService ServiceTypeName="DroneActorServiceType" TargetReplicaSetSize="[DroneActorService_TargetReplicaSetSize]" MinReplicaSetSize="[DroneActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[DroneActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
+    </Service>
+    <Service Name="SwarmActorService" GeneratedIdRef="568351a9-4c31-463b-b029-3f535613fd09|Persisted">
+      <StatefulService ServiceTypeName="SwarmActorServiceType" TargetReplicaSetSize="[SwarmActorService_TargetReplicaSetSize]" MinReplicaSetSize="[SwarmActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[SwarmActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
+    </Service>
+  </DefaultServices>
+</ApplicationManifest>
