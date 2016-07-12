@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/DroneSim" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Parameters>
+    <Parameter Name="WebApp_InstanceCount" Value="1" />
+    <Parameter Name="WebApi_InstanceCount" Value="1" />
+    <Parameter Name="DroneQueryEngine_PartitionCount" Value="1" />
+    <Parameter Name="DroneQueryEngine_MinReplicaSetSize" Value="3" />
+    <Parameter Name="DroneQueryEngine_TargetReplicaSetSize" Value="3" />
+    <Parameter Name="DroneSimulation_InstanceCount" Value="1" />
+    <Parameter Name="DroneActorService_PartitionCount" Value="1" />
+    <Parameter Name="SwarmActorService_PartitionCount" Value="1" />
+  </Parameters>
+</Application>
